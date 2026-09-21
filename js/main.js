@@ -182,9 +182,12 @@
   const aboutPin = pinById('sobre');
   const manifesto = $('[data-words]');
   const words = manifesto ? splitWords(manifesto) : [];
+  const photo = $('.about__photo');
+  if (photo) photo.style.setProperty('--rv', reduced ? 1 : 0);
   let lit = 0;
 
   function updAbout(p) {
+    if (photo) photo.style.setProperty('--rv', clamp((p - .06) / .58).toFixed(3));
     const n = Math.round(clamp(p / .78) * words.length);
     if (n === lit) return;
     const [a, b] = n > lit ? [lit, n] : [n, lit];
