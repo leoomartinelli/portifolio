@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Leonardo Martinelli — Desenvolvedor &amp; Audiovisual</title>
+  <meta name="description" content="Portfólio de Leonardo Martinelli, 18 anos. Desenvolvedor trainee na DATACUBE (PHP e JavaScript), estudante de Ciência da Computação e apaixonado por fotografia e vídeo.">
+  <meta name="theme-color" content="#050505">
+  <meta property="og:title" content="Leonardo Martinelli — Desenvolvedor &amp; Audiovisual">
+  <meta property="og:description" content="Código, luz e movimento. Portfólio 2026.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23050505'/%3E%3Crect x='7' y='7' width='9' height='9' fill='%23ff4a1c'/%3E%3Crect x='17' y='17' width='8' height='8' fill='%23eee8de'/%3E%3C/svg%3E">
+
+  <link rel="preload" href="fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/instrument-serif-italic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/leonardo.webp" as="image" type="image/webp">
+  <link rel="stylesheet" href="css/style.css">
+  <script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+  <a class="skip" href="#sobre">Pular para o conteúdo</a>
+
+  <!-- ─────────── Abertura (loader em forma de claquete) ─────────── -->
+  <div class="loader" aria-hidden="true">
+    <div class="loader__half loader__half--t"></div>
+    <div class="loader__half loader__half--b"></div>
+    <div class="loader__ui">
+      <p class="loader__log">
+        <span>&gt; carregando cena_01</span>
+        <span>&gt; ajustando luz…</span>
+        <span>&gt; compilando sorriso.php</span>
+      </p>
+      <div class="loader__num"><span id="ldNum">000</span><i>%</i></div>
+      <p class="loader__slate">CENA 01 &nbsp;·&nbsp; TAKE 01 &nbsp;·&nbsp; <b>L. MARTINELLI</b></p>
+      <div class="loader__bar"><i></i></div>
+    </div>
+  </div>
+
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- cursor em forma de visor de câmera -->
+  <div class="cur" aria-hidden="true"><div class="cur__box"></div><div class="cur__dot"></div><span class="cur__lb"></span></div>
+
+  <!-- ─────────── Navegação ─────────── -->
+  <header class="nav">
+    <a class="nav__logo" href="#topo" aria-label="Início" data-cursor="topo">
+      <span class="px"></span>LM
+    </a>
+    <nav class="nav__links" aria-label="Seções">
+      <a href="#sobre"><i>01</i>Sobre</a>
+      <a href="#trajetoria"><i>02</i>Trajetória</a>
+      <a href="#stack"><i>03</i>Stack</a>
+      <a href="#lente"><i>04</i>Lente</a>
+      <a href="#projetos"><i>05</i>Projetos</a>
+      <a href="#contato"><i>06</i>Contato</a>
+    </nav>
+    <button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+  </header>
+
+  <div class="menu" id="menu" aria-hidden="true">
+    <a href="#sobre"><i>01</i>Sobre</a>
+    <a href="#trajetoria"><i>02</i>Trajetória</a>
+    <a href="#stack"><i>03</i>Stack</a>
+    <a href="#lente"><i>04</i>Lente</a>
+    <a href="#projetos"><i>05</i>Projetos</a>
+    <a href="#contato"><i>06</i>Contato</a>
+  </div>
+
+  <!-- HUD fixo: timecode + cena atual -->
+  <div class="hud" aria-hidden="true">
+    <span class="hud__rec"><i></i>REC</span>
+    <span class="hud__tc" id="hudTc">00:00:00:00</span>
+    <span class="hud__scene" id="hudScene">Abertura</span>
+  </div>
+
+  <main>
+    <!-- ─────────── 00 · HERO ─────────── -->
+    <section class="hero" id="topo" data-scene="Abertura" aria-label="Apresentação">
+      <div class="hero__glow"></div>
+      <div class="hero__dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+
+      <p class="hero__vert hero__vert--l" aria-hidden="true">Portfólio <em>2026</em> — Edição Dev</p>
+      <p class="hero__vert hero__vert--r" aria-hidden="true">Fotografia · Vídeo · Código</p>
+
+      <h1 class="name">
+        <span class="sr">Leonardo Martinelli</span>
+        <span class="name__a rgb" aria-hidden="true">
+          <span class="name__w">
+            <span class="ch"><span>L</span></span><span class="ch"><span>E</span></span><span class="ch"><span>O</span></span>
+          </span>
+          <span class="name__w">
+            <span class="ch"><span>N</span></span><span class="ch"><span>A</span></span><span class="ch"><span>R</span></span><span class="ch"><span>D</span></span><span class="ch"><span>O</span></span>
+          </span>
+        </span>
+        <span class="name__b" aria-hidden="true"><span>Martinelli</span></span>
+      </h1>
+
+      <div class="hero__puppet">
+        <div class="hero__puppet-in">
+          <img src="assets/leonardo.webp" width="631" height="1595" fetchpriority="high"
+               alt="Leonardo em versão boneco de feltro: cabelo cacheado, óculos redondos, moletom vinho e tênis branco, com as mãos nos bolsos.">
+        </div>
+      </div>
+      <div class="hero__flare" aria-hidden="true"><i></i><i></i></div>
+
+      <div class="hero__spec hero__spec--l" aria-hidden="true">
+        <p>Desenvolvedor Trainee</p>
+        <p>DATACUBE — PHP / JavaScript</p>
+        <p>Ciência da Computação — UNIVAP</p>
+        <p>Fotografia + Vídeo</p>
+        <p class="hero__spec-by"><i></i>Feito à mão por Leonardo</p>
+      </div>
+
+      <p class="hero__lead">
+        Escrevo <em>PHP</em> e <em>JavaScript</em>,<br>
+        e vejo o mundo em <em>24 quadros</em> por segundo.
+      </p>
+
+      <a class="hero__scroll" href="#sobre" data-cursor="rolar"><span>Role</span><i></i></a>
+    </section>
+
+    <!-- ─────────── Fita: PHP ✦ JavaScript ✦ … ─────────── -->
+    <div class="ribbon" aria-hidden="true">
+      <div class="ribbon__row ribbon__row--a" data-dir="1">
+        <div class="ribbon__in">
+          <span>PHP</span><b class="sp"></b><span>JavaScript</span><b class="sp"></b><span>Fotografia</span><b class="sp"></b><span>Vídeo</span><b class="sp"></b><span>DATACUBE</span><b class="sp"></b><span>UNIVAP</span><b class="sp"></b>
+        </div>
+      </div>
+      <div class="ribbon__row ribbon__row--b" data-dir="-1">
+        <div class="ribbon__in">
+          <span>Linhas de <em>código</em></span><b class="sp"></b><span>quadros por <em>segundo</em></span><b class="sp"></b><span>Lógica <em>e</em> luz</span><b class="sp"></b><span>Take <em>01</em></span><b class="sp"></b>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────── 01 · SOBRE ─────────── -->
+    <section class="about pin" id="sobre" data-scene="Sobre" data-pin="240">
+      <div class="pin__stick">
+        <div class="about__in">
+          <p class="eyebrow"><b>01</b> Sobre</p>
+          <p class="manifesto" data-words>
+            Tenho <em>18 anos</em>, escrevo <em>PHP</em> e <em>JavaScript</em> na DATACUBE e enxergo o mundo em <em>quadros por segundo</em>. Entre linhas de código e lentes de câmera, gosto de construir coisas que funcionam por dentro e impressionam por fora.
+          </p>
+          <dl class="stats">
+            <div><dt>anos de idade</dt><dd data-count="18">18</dd></div>
+            <div><dt>linguagens no dia a dia</dt><dd data-count="2">2</dd></div>
+            <div><dt>quadros por segundo</dt><dd data-count="24">24</dd></div>
+            <div><dt>ideias na fila</dt><dd>∞</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── 02 · TRAJETÓRIA (fita de filme) ─────────── -->
+    <section class="film pin" id="trajetoria" data-scene="Trajetória" data-pin="film">
+      <div class="pin__stick film__stick">
+        <header class="film__head">
+          <p class="eyebrow"><b>02</b> Trajetória</p>
+          <h2 class="h2">Minha linha do tempo, em <em>quatro cenas</em>.</h2>
+          <div class="film__meta"><span id="filmCount">01 / 04</span><div class="film__prog"><i></i></div></div>
+        </header>
+
+        <div class="film__track">
+          <article class="frame" data-shot="wide">
+            <div class="frame__view frame__view--orange">
+              <img class="crop" src="assets/leonardo.webp" alt="" width="631" height="1595" loading="lazy" decoding="async" style="--k:1;--cx:.5;--cy:.5">
+              <span class="frame__shot">Plano geral</span>
+              <span class="frame__tc">TC 01:00:00:00</span>
+              <span class="vf-c vf-c--tl"></span><span class="vf-c vf-c--tr"></span><span class="vf-c vf-c--bl"></span><span class="vf-c vf-c--br"></span>
+            </div>
+            <div class="frame__body">
+              <span class="frame__no">01</span>
+              <p class="tag"><i></i>Cena 01 · Concluído</p>
+              <h3>Técnico em <em>Informática</em></h3>
+              <p class="frame__where">UNIVAP Centro</p>
+              <p class="frame__txt">Onde a curiosidade virou ofício. O primeiro passo para transformar o hobby em profissão.</p>
+            </div>
+          </article>
+
+          <article class="frame" data-shot="medium">
+            <div class="frame__view frame__view--maroon">
+              <img class="crop" src="assets/leonardo.webp" alt="" width="631" height="1595" loading="lazy" decoding="async" style="--k:1.75;--cx:.5;--cy:.29">
+              <span class="frame__shot">Plano médio</span>
+              <span class="frame__tc">TC 01:00:14:08</span>
+              <span class="vf-c vf-c--tl"></span><span class="vf-c vf-c--tr"></span><span class="vf-c vf-c--bl"></span><span class="vf-c vf-c--br"></span>
+            </div>
+            <div class="frame__body">
+              <span class="frame__no">02</span>
+              <p class="tag tag--live"><i></i>Cena 02 · Em cartaz</p>
+              <h3>Desenvolvedor <em>Trainee</em></h3>
+              <p class="frame__where">DATACUBE</p>
+              <p class="frame__txt">PHP e JavaScript no dia a dia, aprendendo com problemas reais e entregando código que roda de verdade.</p>
+            </div>
+          </article>
+
+          <article class="frame" data-shot="close">
+            <div class="frame__view frame__view--cream">
+              <img class="crop" src="assets/leonardo.webp" alt="" width="631" height="1595" loading="lazy" decoding="async" style="--k:3.1;--cx:.5;--cy:.17">
+              <span class="frame__shot">Close</span>
+              <span class="frame__tc">TC 01:00:28:16</span>
+              <span class="vf-c vf-c--tl"></span><span class="vf-c vf-c--tr"></span><span class="vf-c vf-c--bl"></span><span class="vf-c vf-c--br"></span>
+            </div>
+            <div class="frame__body">
+              <span class="frame__no">03</span>
+              <p class="tag"><i></i>Cena 03 · Cursando</p>
+              <h3>Ciência da <em>Computação</em></h3>
+              <p class="frame__where">UNIVAP</p>
+              <p class="frame__txt">A teoria por trás da prática: entender o porquê das coisas para construir melhor o como.</p>
+            </div>
+          </article>
+
+          <article class="frame" data-shot="detail">
+            <div class="frame__view frame__view--ice">
+              <img class="crop" src="assets/leonardo.webp" alt="" width="631" height="1595" loading="lazy" decoding="async" style="--k:5.2;--cx:.5;--cy:.155">
+              <span class="frame__shot">Plano detalhe</span>
+              <span class="frame__tc">TC 01:00:42:00</span>
+              <span class="vf-c vf-c--tl"></span><span class="vf-c vf-c--tr"></span><span class="vf-c vf-c--bl"></span><span class="vf-c vf-c--br"></span>
+            </div>
+            <div class="frame__body">
+              <span class="frame__no">04</span>
+              <p class="tag tag--next"><i></i>Cena 04 · A definir</p>
+              <h3>A próxima <em>cena</em></h3>
+              <p class="frame__where">Quem sabe com você</p>
+              <p class="frame__txt">O roteiro continua em aberto. Bora escrever o próximo capítulo juntos?</p>
+              <a class="link" href="#contato" data-cursor="falar">Vamos conversar <span>→</span></a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── 03 · STACK (código que digita com o scroll) ─────────── -->
+    <section class="stack pin" id="stack" data-scene="Stack" data-pin="300">
+      <div class="pin__stick">
+        <div class="stack__in">
+          <div class="stack__txt">
+            <p class="eyebrow"><b>03</b> Stack</p>
+            <h2 class="h2 rgb">Do servidor à <em>tela</em>.</h2>
+            <ul class="skills">
+              <li class="skill is-on" data-skill="0">
+                <span class="skill__n">PHP</span>
+                <span class="skill__d">Regras, dados e a lógica que mantém tudo de pé.</span>
+                <span class="skill__bar"><i></i></span>
+              </li>
+              <li class="skill" data-skill="1">
+                <span class="skill__n">JavaScript</span>
+                <span class="skill__d">Interface viva: interação, animação e detalhe.</span>
+                <span class="skill__bar"><i></i></span>
+              </li>
+            </ul>
+            <p class="stack__hint">↓ role, o código se escreve sozinho</p>
+          </div>
+
+          <div class="ed" role="img" aria-label="Editor de código mostrando um exemplo em PHP e outro em JavaScript sobre o Leonardo">
+            <div class="ed__glow"></div>
+            <div class="ed__win">
+              <div class="ed__bar">
+                <span class="ed__dots"><i></i><i></i><i></i></span>
+                <span class="ed__tabs"><b class="is-on" data-tab="0">leonardo.php</b><b data-tab="1">leonardo.js</b></span>
+              </div>
+              <div class="ed__body">
+<pre data-lang="php">&lt;?php
+
+final class Leonardo
+{
+    private int $idade = 18;
+    private string $empresa = 'DATACUBE';
+    private array $stack = ['PHP', 'JavaScript'];
+
+    public function apresentar(): string
+    {
+        return "{$this-&gt;idade} anos, trainee "
+             . "na {$this-&gt;empresa}. "
+             . implode(' + ', $this-&gt;stack);
+    }
+}
+
+echo (new Leonardo)-&gt;apresentar();</pre>
+<pre data-lang="js" hidden>const leonardo = {
+  curso: 'Ciência da Computação',
+  hobbies: ['fotografia', 'vídeo'],
+
+  async criar(ideia) {
+    const cena = await roteiro(ideia);
+    return `${cena} · no ar!`;
+  },
+};
+
+const roteiro = async (ideia) =&gt; `[${ideia}]`;
+
+leonardo.criar('seu projeto').then(console.log);</pre>
+              </div>
+              <div class="ed__out">
+                <span class="ed__prompt" data-prompt>$ php leonardo.php</span>
+                <span class="ed__res" data-out data-out0="18 anos, trainee na DATACUBE. PHP + JavaScript" data-out1="[seu projeto] · no ar!"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── 04 · LENTE (foco puxado pelo scroll) ─────────── -->
+    <section class="lens pin" id="lente" data-scene="Lente" data-pin="280">
+      <div class="pin__stick lens__stick">
+        <div class="lens__bokeh" aria-hidden="true"></div>
+        <div class="lens__grid" aria-hidden="true"></div>
+
+        <div class="lens__center">
+          <p class="eyebrow"><b>04</b> Lente</p>
+          <h2 class="lens__title" aria-label="Audiovisual"><span>Áudio</span><em>visual</em></h2>
+          <p class="lens__txt">
+            Fotografia e vídeo são o meu jeito de estudar luz, ritmo e história.
+            O mesmo olhar que uso para compor um quadro eu uso para organizar uma interface.
+          </p>
+          <ul class="lens__tags"><li>Fotografia</li><li>Vídeo</li><li>Composição</li><li>Movimento</li></ul>
+        </div>
+
+        <!-- visor -->
+        <div class="vf" aria-hidden="true">
+          <span class="vf-c vf-c--tl"></span><span class="vf-c vf-c--tr"></span><span class="vf-c vf-c--bl"></span><span class="vf-c vf-c--br"></span>
+          <div class="vf__top-l"><span class="vf__rec"><i></i>REC</span><span id="vfTc">00:00:00:00</span></div>
+          <div class="vf__top-r"><span>ISO <b id="vfIso">100</b></span><span>f/<b id="vfAp">1.4</b></span><span><b id="vfSh">1/30</b></span><span class="vf__bat"><i></i><i></i><i></i></span></div>
+          <div class="vf__reticle" id="vfRet"><i></i><span id="vfFocus">Sem foco</span></div>
+          <div class="vf__level"></div>
+          <div class="vf__hist" id="vfHist"></div>
+          <div class="vf__bot-r">4K · 24p · LOG</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── 05 · PROJETOS (próximos lançamentos) ─────────── -->
+    <section class="work" id="projetos" data-scene="Projetos">
+      <div class="work__head">
+        <p class="eyebrow"><b>05</b> Projetos</p>
+        <h2 class="h2 rgb" data-reveal>Próximos <em>lançamentos</em>.</h2>
+        <p class="work__lead" data-reveal>
+          Esta sessão está em montagem. Enquanto os projetos não estreiam, o código fica no GitHub.
+        </p>
+      </div>
+
+      <!-- Para publicar um projeto: troque o conteúdo de um .poster e ponha o link em href -->
+      <div class="posters">
+        <a class="poster poster--a" href="https://github.com/leoomartinelli" target="_blank" rel="noopener" data-reveal data-cursor="ver">
+          <span class="poster__glare"></span>
+          <span class="poster__top"><b>Projeto</b><i>01</i></span>
+          <span class="poster__mid"><em>Em</em><br>breve</span>
+          <span class="poster__bot"><small>PHP</small><small>Um projeto de Leonardo Martinelli · 2026</small></span>
+        </a>
+        <a class="poster poster--b" href="https://github.com/leoomartinelli" target="_blank" rel="noopener" data-reveal data-cursor="ver">
+          <span class="poster__glare"></span>
+          <span class="poster__top"><b>Projeto</b><i>02</i></span>
+          <span class="poster__mid"><em>Em</em><br>breve</span>
+          <span class="poster__bot"><small>JavaScript</small><small>Um projeto de Leonardo Martinelli · 2026</small></span>
+        </a>
+        <a class="poster poster--c" href="https://github.com/leoomartinelli" target="_blank" rel="noopener" data-reveal data-cursor="ver">
+          <span class="poster__glare"></span>
+          <span class="poster__top"><b>Projeto</b><i>03</i></span>
+          <span class="poster__mid"><em>Em</em><br>breve</span>
+          <span class="poster__bot"><small>PHP + JS</small><small>Um projeto de Leonardo Martinelli · 2026</small></span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ─────────── 06 · CONTATO ─────────── -->
+  <footer class="contact" id="contato" data-scene="Fim de cena">
+    <div class="contact__in">
+      <p class="eyebrow"><b>06</b> Contato</p>
+      <h2 class="contact__h rgb">Vamos criar<br><em>algo</em> juntos?</h2>
+      <div class="contact__links">
+        <a class="btn magnet" href="https://github.com/leoomartinelli" target="_blank" rel="noopener" data-cursor="abrir"><span>GitHub</span><i>↗</i></a>
+        <!-- Adicione aqui seus outros contatos (e-mail, LinkedIn, Instagram…) copiando o botão acima -->
+      </div>
+    </div>
+
+    <div class="peek" aria-hidden="true">
+      <div class="peek__bubble">Corta!<br>Valeu por rolar até aqui.</div>
+      <div class="peek__win"><img src="assets/leonardo.webp" alt="" width="631" height="1595" loading="lazy" decoding="async"></div>
+    </div>
+
+    <div class="contact__bar">
+      <span>© 2026 Leonardo Martinelli</span>
+      <span class="contact__clock"><i></i><span id="clock">--:--</span> Brasília</span>
+      <a href="#topo" data-cursor="topo">Voltar ao início ↑</a>
+    </div>
+  </footer>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>
