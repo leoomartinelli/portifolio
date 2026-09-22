@@ -279,6 +279,14 @@ html:not(.js) .tchip{opacity:var(--op,1);scale:1;rotate:var(--rot);transform:non
 .tchip__mark--lr{background:linear-gradient(155deg,#1c4d75,#0a1f33);color:#8fe8ff;font-size:calc(var(--sz)*.3);text-shadow:0 0 10px rgba(127,227,255,.55)}
 .tchip__py{width:100%;height:100%}
 .tchip__edusef{width:92%;height:auto}
+
+/* posições — coluna esquerda e direita, desktop */
+.tchip--js{--top:15%;--left:8.5%;--px:.7;--rot:-7deg;--dur:8.5s;--delay:-1.2s}
+.tchip--lr{--top:33%;--left:6.5%;--px:1.05;--rot:5deg;--dur:8.9s;--delay:-2.1s}
+.tchip--py{--top:57%;--left:8%;--px:1.3;--rot:-5deg;--dur:9.4s;--delay:-.6s}
+.tchip--php{--top:11%;--left:90%;--px:1.15;--rot:6deg;--dur:7.2s;--delay:-3.4s}
+.tchip--n8n{--top:32%;--left:93%;--px:.95;--rot:8deg;--dur:7.8s;--delay:-5s}
+.tchip--edusef{--top:55%;--left:91.5%;--px:.85;--rot:-6deg;--dur:7.5s;--delay:-4.3s}
 .tchip--edusef{background:linear-gradient(155deg,rgba(255,255,255,.5),rgba(255,255,255,.22))}
 
 /* quadradinhos pixel espalhados */
@@ -690,7 +698,6 @@ html.has-cur .goo-field{filter:url(#goo)}
   .peek{width:min(46vw,300px)}
   .peek__win{height:min(58vw,380px)}
   .peek__bubble{left:4%;top:-14%}
-  .hero__tech{display:none}
 }
 /* Hero empilhado: celular (qualquer orientação estreita) e tablet em pé.
    --ph = altura do boneco como fração da tela; o resto se posiciona a partir dele. */
@@ -706,7 +713,16 @@ html.has-cur .goo-field{filter:url(#goo)}
   .hero__lead{left:var(--gut);right:var(--gut);bottom:calc(var(--vh)*.05 + 28px);text-align:center;max-width:none;font-size:clamp(14px,4vw,17px);text-shadow:0 2px 14px #000}
   .hero__scroll{display:none}
   .hero__flare{top:calc(var(--vh)*(1 - var(--ph) + var(--ph)*.147))}
-  .hero__tech{display:none}
+
+  /* chips de vidro no retrato: menores, só 4, nas margens ao lado do boneco —
+     entre o fim do nome e o início do "Martinelli", e entre o fim do
+     "Martinelli" e o texto final, pra não brigar com nenhum texto legível. */
+  .tchip{--sz:clamp(38px,10.5vw,50px)}
+  .tchip--lr,.tchip--n8n{display:none}
+  .tchip--js{--top:30%;--left:9%}
+  .tchip--py{--top:30%;--left:91%}
+  .tchip--php{--top:63%;--left:9%}
+  .tchip--edusef{--top:63%;--left:91%}
 }
 /* tablet em pé: boneco menor e nome menor, senão a cabeça cobre as letras */
 @media (min-width:600px) and (max-width:1100px) and (orientation:portrait){
@@ -714,6 +730,7 @@ html.has-cur .goo-field{filter:url(#goo)}
   .name__a{font-size:min(23vw,14vh*1.6)}
   .name__b{font-size:min(17vw,10vh*1.6)}
   .hero__lead{font-size:clamp(16px,2.4vw,22px)}
+  .tchip{--sz:clamp(46px,7.6vw,64px)}
 }
 
 @media (max-width:720px){
