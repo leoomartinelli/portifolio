@@ -29,7 +29,14 @@ Thumbs.db
 eu.png
 ChatGPT Image*.png
 
-# Materiais de referência do EDU SEF (marca/identidade de terceiros; só a
-# marca vetorial mínima extraída fica em assets/edusef-mark.svg)
+# Materiais de referência do EDU SEF (marca/identidade e código-fonte de
+# terceiros; só os SVGs derivados mínimos ficam em assets/edusef-*.svg)
 APRESENTAÇÃO_EDU_SEF.pdf
 ARQUIVOS CAMISETA FECHADO.pdf
+inicio.html
+alvo.png
+cadeado.png
+chapeu.png
+edu_sef_logo_quadrada.png
+foguete.png
+heart.png

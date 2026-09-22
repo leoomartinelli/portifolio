@@ -9,7 +9,7 @@
 :root{
   --blue:#0038d8;
   --blue-deep:#00227e;
-  --yellow:#e7ec25;
+  --yellow:#fce300;
   --green:#16c464;
   --ink:#0a1740;
   --dim:#5b6a9c;
@@ -85,7 +85,8 @@ ul{list-style:none}
 .ehead__back{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px;color:var(--ink);transition:gap .25s var(--ease),color .2s}
 .ehead__back:hover{gap:14px;color:var(--blue)}
 .ehead__arrow{font-size:17px}
-.ehead__logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:19px;letter-spacing:-.01em;color:var(--blue)}
+.ehead__logo{display:flex;align-items:center}
+.ehead__logo img{height:clamp(20px,2.6vw,26px);width:auto}
 
 /* ---------- hero ---------- */
 .ehero{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.92fr);align-items:center;gap:clamp(20px,4vw,60px);padding:clamp(24px,5vh,60px) var(--gut) clamp(50px,8vh,90px);overflow:visible}
