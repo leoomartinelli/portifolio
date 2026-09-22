@@ -53,9 +53,10 @@
       <a href="#sobre"><i>01</i>Sobre</a>
       <a href="#trajetoria"><i>02</i>Trajetória</a>
       <a href="#stack"><i>03</i>Stack</a>
-      <a href="#lente"><i>04</i>Lente</a>
-      <a href="#projetos"><i>05</i>Projetos</a>
-      <a href="#contato"><i>06</i>Contato</a>
+      <a href="#automacao"><i>04</i>Automação</a>
+      <a href="#lente"><i>05</i>Lente</a>
+      <a href="#projetos"><i>06</i>Projetos</a>
+      <a href="#contato"><i>07</i>Contato</a>
     </nav>
     <button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
   </header>
@@ -64,9 +65,10 @@
     <a href="#sobre"><i>01</i>Sobre</a>
     <a href="#trajetoria"><i>02</i>Trajetória</a>
     <a href="#stack"><i>03</i>Stack</a>
-    <a href="#lente"><i>04</i>Lente</a>
-    <a href="#projetos"><i>05</i>Projetos</a>
-    <a href="#contato"><i>06</i>Contato</a>
+    <a href="#automacao"><i>04</i>Automação</a>
+    <a href="#lente"><i>05</i>Lente</a>
+    <a href="#projetos"><i>06</i>Projetos</a>
+    <a href="#contato"><i>07</i>Contato</a>
   </div>
 
   <!-- HUD fixo: timecode + cena atual -->
@@ -346,14 +348,63 @@ leonardo.criar('seu projeto').then(console.log);</pre>
       </div>
     </section>
 
-    <!-- ─────────── 04 · LENTE (foco puxado pelo scroll) ─────────── -->
+    <!-- ─────────── 04 · AUTOMAÇÃO (nodes se conectando) ─────────── -->
+    <section class="auto" id="automacao" data-scene="Automação">
+      <div class="auto__head">
+        <p class="eyebrow"><b>04</b> Automação</p>
+        <h2 class="h2" data-reveal>Fluxos que<br><em>trabalham</em> sozinhos.</h2>
+        <p class="auto__lead" data-reveal>
+          Crawler pra coletar dado, agente de IA pra conversar com quem importa,
+          e o n8n amarrando tudo — rodando em segundo plano, sem eu precisar estar lá.
+        </p>
+        <ul class="auto__tags" data-reveal>
+          <li>Crawler</li><li>Agentes de IA</li><li>Automações</li><li>n8n</li>
+        </ul>
+      </div>
+
+      <div class="auto__stage">
+        <div class="auto__robot" data-reveal>
+          <img src="assets/robo.webp" width="916" height="1567" loading="lazy" decoding="async"
+               alt="Personagem robô com moletom vinho, capuz e olhos em formato de traço laranja brilhante — o agente de IA do fluxo.">
+        </div>
+
+        <div class="auto__flow" aria-hidden="true">
+          <div class="fnode" data-reveal>
+            <i class="ficon ficon--bolt"></i><span>Gatilho</span>
+          </div>
+          <span class="fline"><i></i></span>
+          <div class="fnode" data-reveal>
+            <i class="ficon ficon--crawl"></i><span>Crawler</span>
+          </div>
+          <span class="fline"><i></i></span>
+          <div class="fnode" data-reveal>
+            <i class="ficon ficon--bot"></i><span>Agente de IA</span>
+          </div>
+          <span class="fline"><i></i></span>
+          <div class="fnode fnode--n8n" data-reveal>
+            <i class="ficon ficon--flow"></i><span>n8n</span>
+          </div>
+
+          <div class="fnotify" data-reveal>
+            <span class="fnotify__ping"></span>
+            <div class="fnotify__ico"><i class="ficon ficon--chat"></i></div>
+            <div class="fnotify__txt">
+              <b>Agente de IA</b>
+              <p>“Achei 12 leads novos. Já respondi 3.”</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── 05 · LENTE (foco puxado pelo scroll) ─────────── -->
     <section class="lens pin" id="lente" data-scene="Lente" data-pin="280">
       <div class="pin__stick lens__stick">
         <div class="lens__bokeh" aria-hidden="true"></div>
         <div class="lens__grid" aria-hidden="true"></div>
 
         <div class="lens__center">
-          <p class="eyebrow"><b>04</b> Lente</p>
+          <p class="eyebrow"><b>05</b> Lente</p>
           <h2 class="lens__title" aria-label="Audiovisual"><span>Áudio</span><em>visual</em></h2>
           <p class="lens__txt">
             Fotografia e vídeo são o meu jeito de estudar luz, ritmo e história.
@@ -375,10 +426,10 @@ leonardo.criar('seu projeto').then(console.log);</pre>
       </div>
     </section>
 
-    <!-- ─────────── 05 · PROJETOS (próximos lançamentos) ─────────── -->
+    <!-- ─────────── 06 · PROJETOS (próximos lançamentos) ─────────── -->
     <section class="work" id="projetos" data-scene="Projetos">
       <div class="work__head">
-        <p class="eyebrow"><b>05</b> Projetos</p>
+        <p class="eyebrow"><b>06</b> Projetos</p>
         <h2 class="h2 rgb" data-reveal>Próximos <em>lançamentos</em>.</h2>
         <p class="work__lead" data-reveal>
           Esta sessão está em montagem. Enquanto os projetos não estreiam, o código fica no GitHub.
@@ -410,10 +461,10 @@ leonardo.criar('seu projeto').then(console.log);</pre>
     </section>
   </main>
 
-  <!-- ─────────── 06 · CONTATO ─────────── -->
+  <!-- ─────────── 07 · CONTATO ─────────── -->
   <footer class="contact" id="contato" data-scene="Fim de cena">
     <div class="contact__in">
-      <p class="eyebrow"><b>06</b> Contato</p>
+      <p class="eyebrow"><b>07</b> Contato</p>
       <h2 class="contact__h rgb">Vamos criar<br><em>algo</em> juntos?</h2>
       <p class="contact__loc"><i></i>São José dos Campos — SP</p>
       <!-- efeito "bolha de sabão": svg#goo funde os blobs quando o mouse passa perto de dois botões -->
