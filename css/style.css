@@ -243,6 +243,44 @@ html.is-loaded .hero__flare{animation:flare 2.6s 1.2s var(--ease) forwards}
 .hero__flare i{position:absolute;inset:0;background:linear-gradient(90deg,transparent 0,rgba(255,60,90,0) 8%,rgba(255,90,40,.85) 30%,#fff 50%,rgba(120,205,255,.85) 70%,rgba(80,120,255,0) 92%,transparent 100%)}
 .hero__flare i:nth-child(2){height:70px;top:-34px;filter:blur(30px);opacity:.5}
 
+/* ---------- chips de vidro flutuando (stack) ---------- */
+.hero__tech{position:absolute;inset:0;z-index:3;pointer-events:none}
+.tchip{
+  --sz:clamp(52px,5.4vw,76px);--px:1;--rot:0deg;--dur:8s;--delay:0s;
+  position:absolute;top:var(--top);left:var(--left);width:var(--sz);aspect-ratio:1;margin:calc(var(--sz)*-.5) 0 0 calc(var(--sz)*-.5);
+  border-radius:26%;display:grid;place-items:center;padding:calc(var(--sz)*.12);box-sizing:border-box;isolation:isolate;
+  background:linear-gradient(155deg,rgba(255,255,255,.24),rgba(255,255,255,.06));
+  border:1px solid rgba(255,255,255,.4);
+  box-shadow:0 24px 46px -18px rgba(0,0,0,.75),0 0 0 1px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.6),inset 0 -10px 16px -12px rgba(0,0,0,.4);
+  backdrop-filter:blur(13px) saturate(1.35);-webkit-backdrop-filter:blur(13px) saturate(1.35);
+  opacity:0;scale:.4;rotate:calc(var(--rot) - 18deg);
+  transform:translate3d(calc(var(--mx,0)*var(--px)*2.6vw),calc(var(--my,0)*var(--px)*2vh),0);
+  will-change:transform,translate,rotate;
+}
+html.is-loaded .tchip{
+  animation:tchipIn .9s var(--ease) forwards,tfloat var(--dur) ease-in-out calc(var(--delay) - .9s) infinite;
+  transition:transform .5s var(--ease);
+}
+.tchip.is-soft{--op:.82;filter:blur(1.6px);opacity:.001}
+html:not(.js) .tchip{opacity:var(--op,1);scale:1;rotate:var(--rot);transform:none}
+@keyframes tchipIn{to{opacity:var(--op,1);scale:1;rotate:var(--rot)}}
+@keyframes tfloat{
+  0%,100%{translate:0 0;rotate:var(--rot)}
+  50%{translate:0 -16px;rotate:calc(var(--rot) + 3deg)}
+}
+.tchip__mark{
+  width:100%;height:100%;border-radius:24%;display:grid;place-items:center;
+  font-family:var(--f-mono);font-weight:700;letter-spacing:-.02em;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -4px 8px -4px rgba(0,0,0,.3);
+}
+.tchip__mark--js{background:#f7df1e;color:#0a0a0a;font-size:38%;font-weight:800}
+.tchip__mark--php{background:linear-gradient(155deg,#8892e0,#4f5aad);color:#fff;font-style:italic;font-weight:800;font-size:32%;text-transform:lowercase;text-shadow:0 1px 3px rgba(0,0,0,.35)}
+.tchip__mark--n8n{background:linear-gradient(155deg,#3a2233,#1c1018);color:#ff6d5a;font-weight:800;font-size:32%;text-transform:lowercase;text-shadow:0 0 10px rgba(255,109,90,.5)}
+.tchip__mark--lr{background:linear-gradient(155deg,#173c5c,#0a1f33);color:#5fd8ff;font-weight:800;font-size:34%;text-shadow:0 0 10px rgba(95,216,255,.45)}
+.tchip__py{width:100%;height:100%}
+.tchip__edusef{width:78%;height:auto}
+.tchip--edusef{background:linear-gradient(155deg,rgba(255,255,255,.5),rgba(255,255,255,.22))}
+
 /* quadradinhos pixel espalhados */
 .hero__dots i{position:absolute;z-index:1;width:clamp(8px,1vw,14px);aspect-ratio:1;background:var(--orange);opacity:0}
 html.is-loaded .hero__dots i{animation:dot 3s var(--d,0s) steps(1) infinite}
@@ -667,6 +705,7 @@ html.has-cur .goo-field{filter:url(#goo)}
   .hero__lead{left:var(--gut);right:var(--gut);bottom:calc(var(--vh)*.05 + 28px);text-align:center;max-width:none;font-size:clamp(14px,4vw,17px);text-shadow:0 2px 14px #000}
   .hero__scroll{display:none}
   .hero__flare{top:calc(var(--vh)*(1 - var(--ph) + var(--ph)*.147))}
+  .hero__tech{display:none}
 }
 /* tablet em pé: boneco menor e nome menor, senão a cabeça cobre as letras */
 @media (min-width:600px) and (max-width:1100px) and (orientation:portrait){
@@ -697,7 +736,7 @@ html.has-cur .goo-field{filter:url(#goo)}
 /* telas muito baixas (celular deitado): compacta as cenas fixadas para nada ser cortado */
 @media (max-height:520px) and (orientation:landscape){
   .hero{min-height:0}
-  .hero__spec,.hero__lead,.hero__vert{display:none}
+  .hero__spec,.hero__lead,.hero__vert,.hero__tech{display:none}
   .name__a{font-size:min(19.6vw,44vh*1.28,320px)}
   .manifesto{font-size:clamp(17px,3.1vw,30px);line-height:1.12}
   .about__in{grid-template-columns:1fr auto;grid-template-areas:"eyebrow photo" "text photo";row-gap:12px}
@@ -743,6 +782,8 @@ html.has-cur .goo-field{filter:url(#goo)}
   .ch>span,.name__b>span{transform:none;animation:none!important}
   .hero__glow{scale:1}.hero__puppet{opacity:1;filter:none}.hero__flare{opacity:.6;transform:none}
   .hero__vert,.hero__spec,.hero__lead,.hud{opacity:1}
+  .tchip{animation:none!important;opacity:1;scale:1;rotate:var(--rot);transform:none;transition:none}
+  .tchip.is-soft{opacity:.85}
   .js [data-reveal]{opacity:1;transform:none;filter:none}
   .js .manifesto .w{color:var(--ink)}.js .manifesto em .w{color:var(--ember)}
   .lens__title,.lens__bokeh{filter:none}
