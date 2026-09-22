@@ -579,10 +579,31 @@
   /* ------------------------------------------------------------------------
      Partida
      ------------------------------------------------------------------------ */
+  // "voltar direto pra uma seção" (ex.: botão de voltar do projeto EDU SEF).
+  // Usa ?to=id em vez de #id: uma âncora de verdade faria o navegador pular
+  // ANTES do JS terminar de calcular a altura das seções "pinadas", pousando
+  // no lugar errado. Com query string o navegador não mexe no scroll sozinho;
+  // o salto só acontece por aqui, escondido atrás do loader.
+  const jumpTarget = new URLSearchParams(location.search).get('to');
+  const jumpIfNeeded = () => {
+    if (!jumpTarget) return;
+    const el = document.getElementById(jumpTarget);
+    if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
+  };
+
   boot();
   measure();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
-  addEventListener('load', measure);
+  jumpIfNeeded();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); jumpIfNeeded(); });
+  addEventListener('load', () => {
+    measure();
+    jumpIfNeeded();
+    if (jumpTarget) {
+      const url = new URL(location.href);
+      url.searchParams.delete('to');
+      history.replaceState(null, '', url.pathname + url.search + url.hash);
+    }
+  });
 
   if (reduced) {
     // estado final, sem animação
