@@ -549,9 +549,20 @@ html:not(.js) .manifesto em{color:var(--ember)}
 .contact__in{padding:clamp(90px,16vh,170px) var(--gut) 0;display:grid;gap:clamp(20px,4vh,40px);justify-items:start}
 .contact__h{font-weight:800;font-size:clamp(46px,11.5vw,210px);line-height:.86;letter-spacing:-.06em}
 .contact__h em{font-size:1.06em;color:var(--ember);letter-spacing:-.03em}
-.contact__links{display:flex;flex-wrap:wrap;gap:12px}
+.contact__links{position:relative;display:flex;flex-wrap:wrap;gap:12px}
+.goo-defs{position:absolute;width:0;height:0;overflow:hidden}
+
+/* camada de blobs por trás dos botões: some por padrão, e só funde quando o
+   cursor (.goo-cursor) chega perto — ver initGoo() em main.js */
+.goo-field{position:absolute;inset:0;z-index:0;pointer-events:none}
+html.has-cur .goo-field{filter:url(#goo)}
+.goo-blob,.goo-cursor{
+  position:absolute;left:0;top:0;border-radius:99px;background:var(--orange);opacity:0;transform:scale(.001);
+  will-change:opacity,transform;transition:opacity .28s,transform .28s cubic-bezier(.2,.8,.2,1);
+}
+.goo-cursor{width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;transition:opacity .32s,transform .12s linear}
 .btn{
-  display:inline-flex;align-items:center;gap:14px;padding:16px 26px;border-radius:99px;border:1px solid rgba(238,232,222,.4);
+  position:relative;z-index:1;display:inline-flex;align-items:center;gap:14px;padding:16px 26px;border-radius:99px;border:1px solid rgba(238,232,222,.4);
   font-weight:700;font-size:clamp(15px,1.3vw,19px);letter-spacing:-.02em;transition:background .3s,color .3s,border-color .3s;will-change:transform;
 }
 .btn i{font-style:normal;transition:transform .3s var(--ease)}
@@ -710,7 +721,7 @@ html:not(.js) .manifesto em{color:var(--ember)}
   .grain,.hud__rec i,.tag--live i,.caret,.hero__dots i,.hero__scroll i,.hero__puppet-in{animation:none}
   .js .pin{height:auto}
   .pin__stick{position:static;height:auto;min-height:var(--vh);padding:80px 0}
-  .film__stick{overflow:visible}
+  .film__stick{overflow-x:hidden;overflow-y:visible}
   .film__track{transform:none!important;overflow-x:auto;max-width:100vw}
   .ch>span,.name__b>span{transform:none;animation:none!important}
   .hero__glow{scale:1}.hero__puppet{opacity:1;filter:none}.hero__flare{opacity:.6;transform:none}

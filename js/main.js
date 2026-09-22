@@ -479,6 +479,59 @@
   });
 
   /* ------------------------------------------------------------------------
+     Botões de contato — efeito "bolha de sabão" (SVG goo)
+     Uma bolha acompanha o cursor; ao chegar perto de um botão, a bolha do
+     botão acorda e as duas se fundem pelo filtro #goo, como no iOS.
+     ------------------------------------------------------------------------ */
+  const gooLinks = $('.contact__links');
+  if (gooLinks && fine && !reduced) {
+    const gooField = $('.goo-field', gooLinks);
+    const gooCursor = $('.goo-cursor', gooField);
+    const gooBtns = $$('.btn', gooLinks).map((btn) => {
+      const el = document.createElement('i');
+      el.className = 'goo-blob';
+      gooField.append(el);
+      return { btn, el };
+    });
+
+    const layoutGoo = () => {
+      const base = gooLinks.getBoundingClientRect();
+      gooBtns.forEach(({ btn, el }) => {
+        const r = btn.getBoundingClientRect();
+        el.style.left = `${(r.left - base.left).toFixed(1)}px`;
+        el.style.top = `${(r.top - base.top).toFixed(1)}px`;
+        el.style.width = `${r.width.toFixed(1)}px`;
+        el.style.height = `${r.height.toFixed(1)}px`;
+      });
+    };
+    layoutGoo();
+    addEventListener('resize', layoutGoo);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layoutGoo);
+
+    const REACH = 130; // px: alcance da bolha até acordar o botão vizinho
+    const distToRect = (x, y, r) => Math.hypot(
+      Math.max(r.left - x, 0, x - r.right),
+      Math.max(r.top - y, 0, y - r.bottom),
+    );
+
+    gooLinks.addEventListener('pointermove', (e) => {
+      const base = gooLinks.getBoundingClientRect();
+      gooCursor.style.opacity = '1';
+      gooCursor.style.transform = `translate(${(e.clientX - base.left).toFixed(1)}px,${(e.clientY - base.top).toFixed(1)}px) scale(1)`;
+      gooBtns.forEach(({ btn, el }) => {
+        const k = clamp(1 - distToRect(e.clientX, e.clientY, btn.getBoundingClientRect()) / REACH);
+        const eased = k * k;
+        el.style.opacity = eased.toFixed(3);
+        el.style.transform = `scale(${(0.82 + eased * 0.3).toFixed(3)})`;
+      });
+    });
+    gooLinks.addEventListener('pointerleave', () => {
+      gooCursor.style.opacity = '0';
+      gooBtns.forEach(({ el }) => { el.style.opacity = '0'; });
+    });
+  }
+
+  /* ------------------------------------------------------------------------
      Revelações, contadores, menu, relógio
      ------------------------------------------------------------------------ */
   const io = new IntersectionObserver((entries) => {

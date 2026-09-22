@@ -382,7 +382,16 @@ leonardo.criar('seu projeto').then(console.log);</pre>
       <p class="eyebrow"><b>06</b> Contato</p>
       <h2 class="contact__h rgb">Vamos criar<br><em>algo</em> juntos?</h2>
       <p class="contact__loc"><i></i>São José dos Campos — SP</p>
+      <!-- efeito "bolha de sabão": svg#goo funde os blobs quando o mouse passa perto de dois botões -->
+      <svg class="goo-defs" aria-hidden="true" focusable="false">
+        <filter id="goo" x="-100%" y="-300%" width="300%" height="700%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur"/>
+          <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" result="goo"/>
+          <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+        </filter>
+      </svg>
       <div class="contact__links">
+        <div class="goo-field" aria-hidden="true"><i class="goo-cursor"></i></div>
         <a class="btn magnet" href="mailto:leo.martinelli07@gmail.com" data-cursor="enviar"><span>E-mail</span><i>↗</i></a>
         <a class="btn magnet" href="https://github.com/leoomartinelli" target="_blank" rel="noopener" data-cursor="abrir"><span>GitHub</span><i>↗</i></a>
         <a class="btn magnet" href="https://www.linkedin.com/in/leonardo-martinelli-de-oliveira-lima-5aa8b8280" target="_blank" rel="noopener" data-cursor="abrir"><span>LinkedIn</span><i>↗</i></a>
