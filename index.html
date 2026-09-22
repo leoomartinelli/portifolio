@@ -14,6 +14,8 @@
   <link rel="preload" href="fonts/bricolage.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/instrument-serif-italic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/leonardo.webp" as="image" type="image/webp">
+  <meta name="view-transition" content="same-origin">
+  <link rel="stylesheet" href="css/transition.css">
   <link rel="stylesheet" href="css/style.css">
   <script>document.documentElement.classList.add('js')</script>
 </head>
@@ -36,6 +38,7 @@
     </div>
   </div>
 
+  <div class="vt-flash" aria-hidden="true"><img src="assets/edusef-mark.svg" alt=""></div>
   <div class="grain" aria-hidden="true"></div>
 
   <!-- cursor em forma de visor de câmera -->
@@ -354,11 +357,11 @@ leonardo.criar('seu projeto').then(console.log);</pre>
 
       <!-- Para publicar um projeto: troque o conteúdo de um .poster e ponha o link em href -->
       <div class="posters">
-        <a class="poster poster--a" href="https://github.com/leoomartinelli" target="_blank" rel="noopener" data-reveal data-cursor="ver">
+        <a class="poster poster--a" href="projeto-edusef.html" data-reveal data-cursor="abrir">
           <span class="poster__glare"></span>
           <span class="poster__top"><b>Projeto</b><i>01</i></span>
-          <span class="poster__mid"><em>Em</em><br>breve</span>
-          <span class="poster__bot"><small>PHP</small><small>Um projeto de Leonardo Martinelli · 2026</small></span>
+          <span class="poster__mid">EDU<br><em>SEF</em></span>
+          <span class="poster__bot"><small>PHP</small><small>Sistema de gestão escolar · com o Colégio Crescer</small></span>
         </a>
         <a class="poster poster--b" href="https://github.com/leoomartinelli" target="_blank" rel="noopener" data-reveal data-cursor="ver">
           <span class="poster__glare"></span>

@@ -1,0 +1,76 @@
+/* ==========================================================================
+   Transição entre documentos — do portfólio (preto/laranja) para o EDU SEF
+   (azul/amarelo). Usa a View Transition API nativa entre páginas (Chrome/Edge
+   126+); em outros navegadores a navegação simplesmente acontece sem
+   animação — nada quebra, é puro progressive enhancement.
+   Este arquivo é carregado pelas DUAS páginas (index.html e projeto-edusef.html).
+   ========================================================================== */
+
+@view-transition {
+  navigation: auto;
+}
+
+/* a raiz de cada página dissolve com uma leve escala, em vez do crossfade
+   padrão duplicado (old+new sobrepostos) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: .52s;
+  animation-timing-function: cubic-bezier(.4, 0, .2, 1);
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) { animation-name: vt-out; }
+::view-transition-new(root) { animation-name: vt-in; }
+
+@keyframes vt-out {
+  to { opacity: 0; transform: scale(.985); filter: saturate(1.25) brightness(.88); }
+}
+@keyframes vt-in {
+  from { opacity: 0; transform: scale(1.015); filter: saturate(.8) brightness(1.1); }
+}
+
+/* painel diagonal que varre a tela entre as duas identidades visuais —
+   mesmo elemento existe nas duas páginas com o mesmo view-transition-name,
+   então o navegador o anima como uma peça só cruzando de um lado ao outro */
+.vt-flash {
+  position: fixed;
+  inset: -25vh -25vw;
+  z-index: 2147483647;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  background: linear-gradient(115deg,
+    transparent 40%,
+    #1531c9 45%,
+    #1531c9 55%,
+    transparent 60%
+  );
+  view-transition-name: edu-flash;
+}
+.vt-flash img { width: min(13vw, 110px); height: auto; filter: drop-shadow(0 6px 30px rgba(0, 0, 0, .35)); }
+
+::view-transition-group(edu-flash) {
+  animation-duration: .8s;
+  animation-timing-function: cubic-bezier(.22, .8, .2, 1);
+}
+::view-transition-old(edu-flash) { animation: vt-flash-out .3s ease-in both; }
+::view-transition-new(edu-flash) { animation: vt-flash-sweep .8s cubic-bezier(.22, .8, .2, 1) both; }
+
+@keyframes vt-flash-sweep {
+  0%   { opacity: 0; transform: translate3d(-42vw, 0, 0); }
+  32%  { opacity: 1; }
+  52%  { opacity: 1; transform: translate3d(0, 0, 0); }
+  100% { opacity: 0; transform: translate3d(42vw, 0, 0); }
+}
+@keyframes vt-flash-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
