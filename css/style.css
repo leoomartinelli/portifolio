@@ -583,8 +583,15 @@ html:not(.js) .manifesto em{color:var(--ember)}
   font:500 10.5px/1.2 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);background:rgba(5,5,5,.5)
 }
 .contact__bar a:hover{color:var(--ink)}
-.contact__clock{display:flex;align-items:center;gap:8px}
+.contact__clock{display:flex;align-items:center;gap:8px;white-space:nowrap}
 .contact__clock i{width:6px;height:6px;border-radius:50%;background:var(--ok);animation:blink 1.6s steps(1) infinite}
+/* o relógio fica no meio de verdade (não só entre os vizinhos), largo o bastante para o nome comprido de um lado */
+@media (min-width:760px){
+  .contact__bar{display:grid;grid-template-columns:1fr auto 1fr;justify-content:normal}
+  .contact__bar>:first-child{justify-self:start}
+  .contact__clock{justify-self:center}
+  .contact__bar>:last-child{justify-self:end}
+}
 
 /* ==========================================================================
    Responsivo
