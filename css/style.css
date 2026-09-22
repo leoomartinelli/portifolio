@@ -557,6 +557,9 @@ html:not(.js) .manifesto em{color:var(--ember)}
 .btn i{font-style:normal;transition:transform .3s var(--ease)}
 .btn:hover{background:var(--orange);border-color:var(--orange);color:#050505}
 .btn:hover i{transform:translate(3px,-3px)}
+.btn--stack{flex-direction:column;align-items:flex-start;gap:1px;padding:12px 26px 14px;position:relative}
+.btn--stack b{font:500 10px/1 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;font-weight:500;opacity:.65}
+.btn--stack i{position:absolute;right:22px;top:50%;translate:0 -50%}
 
 .peek{position:absolute;right:clamp(10px,7vw,120px);bottom:clamp(46px,7vh,70px);z-index:2;width:min(30vw,380px)}
 .peek__win{position:relative;height:min(38vw,470px);overflow:hidden;-webkit-mask-image:linear-gradient(#000 78%,transparent);mask-image:linear-gradient(#000 78%,transparent)}
