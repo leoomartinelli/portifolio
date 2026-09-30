@@ -439,52 +439,13 @@ leonardo.criar('seu projeto').then(console.log);</pre>
       </div>
 
       <div class="gal__stage">
-        <!-- câmera 100% CSS (sem imagem/modelo 3D importado): um cubo preserve-3d
-             com 6 faces detalhadas, girando sem parar. O flash dispara quando
-             a galeria entra em tela, meio segundo antes das fotos aparecerem. -->
-        <div class="cam3d">
-          <div class="cam3d__spin">
-            <div class="cam3d__face cam3d__face--front">
-              <span class="cam3d__evf"></span>
-              <span class="cam3d__hotshoe"></span>
-              <span class="cam3d__mount">
-                <span class="cam3d__mount-ring"></span>
-                <span class="cam3d__mount-glass"></span>
-              </span>
-              <span class="cam3d__grip"></span>
-              <span class="cam3d__shutter"></span>
-              <span class="cam3d__logo">α7III</span>
-            </div>
-            <div class="cam3d__face cam3d__face--back">
-              <span class="cam3d__evfcup"></span>
-              <span class="cam3d__screen"><i></i></span>
-              <span class="cam3d__pad">
-                <i></i><i></i><i></i><i></i><span></span>
-              </span>
-              <span class="cam3d__dial cam3d__dial--back"></span>
-            </div>
-            <div class="cam3d__face cam3d__face--top">
-              <span class="cam3d__evftop"></span>
-              <span class="cam3d__dial cam3d__dial--mode"></span>
-              <span class="cam3d__dial cam3d__dial--exp"></span>
-              <span class="cam3d__shutter-top"></span>
-              <span class="cam3d__brand">SONY</span>
-            </div>
-            <div class="cam3d__face cam3d__face--bottom">
-              <span class="cam3d__tripod"></span>
-              <span class="cam3d__seam"></span>
-            </div>
-            <div class="cam3d__face cam3d__face--left">
-              <span class="cam3d__port"></span>
-              <span class="cam3d__lug"></span>
-            </div>
-            <div class="cam3d__face cam3d__face--right">
-              <span class="cam3d__doorline"></span>
-              <span class="cam3d__lug"></span>
-            </div>
-          </div>
-          <span class="cam3d__shadow" aria-hidden="true"></span>
-          <span class="cam3d__flash" aria-hidden="true"></span>
+        <!-- câmera 3D interativa (Three.js): arraste pra girar, botões de ângulo,
+             "Girar" liga/desliga a rotação automática, "Disparar" tira uma foto
+             (e avisa esta página por postMessage, que faz um flash passar pela grade). -->
+        <div class="gal__cam" data-reveal>
+          <iframe class="gal__cam-frame" id="galCamFrame" src="camera.html"
+                  title="Câmera 3D interativa: arraste para girar, use os botões para trocar de ângulo ou disparar"
+                  loading="lazy"></iframe>
         </div>
 
         <div class="gal__grid" id="galGrid">

@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LM-01 — câmera em 3D</title>
+<meta name="theme-color" content="#050505">
+<style>
+  @font-face{font-family:"Bricolage Grotesque";src:url(fonts/bricolage.woff2) format("woff2");font-weight:200 800;font-display:swap}
+  @font-face{font-family:"Instrument Serif";src:url(fonts/instrument-serif-italic.woff2) format("woff2");font-style:italic;font-weight:400;font-display:swap}
+  :root {
+    --bg: #eee8de;
+    --bg-2: #e2dace;
+    --ink: #050505;
+    --muted: #5f5950;
+    --line: rgba(5,5,5,.14);
+    --panel: rgba(238,232,222,.72);
+    --accent: #ff4a1c;
+    --sans: "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #050505; --bg-2: #15130f; --ink: #eee8de; --muted: #8e887f;
+      --line: rgba(238,232,222,.14); --panel: rgba(5,5,5,.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #050505; --bg-2: #15130f; --ink: #eee8de; --muted: #8e887f;
+    --line: rgba(238,232,222,.14); --panel: rgba(5,5,5,.6);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0; height: 100%; overflow: hidden;
+    background: var(--bg);
+    color: var(--ink); font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  .stage { position: relative; height: 100%; }
+  canvas#c { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; outline: none; }
+  canvas#c:active { cursor: grabbing; }
+
+  .id { position: absolute; top: clamp(18px, 4vw, 40px); left: clamp(18px, 4vw, 44px); pointer-events: none; max-width: 22rem; }
+  .id h1 {
+    margin: 0; font-weight: 800; font-size: clamp(3rem, 9vw, 6.5rem);
+    line-height: .86; letter-spacing: -.045em; font-variation-settings: "opsz" 96;
+  }
+  .id h1 .px { display: inline-block; width: .16em; height: .16em; background: var(--accent); margin-left: .06em; vertical-align: .08em; }
+  .id p { margin: .7rem 0 0; font-family: var(--serif); font-style: italic; font-size: clamp(1.15rem, 2vw, 1.45rem); line-height: 1.3; color: var(--muted); }
+
+  .count { position: absolute; top: clamp(18px, 4vw, 40px); right: clamp(18px, 4vw, 44px); text-align: right; pointer-events: none; }
+  .count b { display: block; font-weight: 800; font-size: clamp(2rem, 5vw, 3rem); line-height: 1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+  .count span { font-size: .85rem; color: var(--muted); }
+
+  .dock {
+    position: absolute; left: 50%; bottom: clamp(16px, 3.5vw, 36px); transform: translateX(-50%);
+    display: flex; align-items: center; gap: 6px; padding: 6px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    max-width: calc(100% - 24px);
+  }
+  .views { display: flex; gap: 2px; }
+  .dock button {
+    font: 600 .92rem/1 var(--sans); color: var(--ink); background: transparent;
+    border: 0; border-radius: 999px; padding: .72rem 1rem; cursor: pointer; white-space: nowrap;
+  }
+  .dock button:hover { background: var(--line); }
+  .dock button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .dock button:focus-visible, canvas#c:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .sep { width: 1px; align-self: stretch; margin: 6px 4px; background: var(--line); }
+  .dock .shoot { background: var(--accent); color: #050505; padding-inline: 1.25rem; display: inline-flex; align-items: center; gap: .5rem; }
+  .dock .shoot:hover { background: #ff6a42; }
+  .dock .shoot i { width: .7rem; height: .7rem; border-radius: 50%; border: 2px solid currentColor; }
+
+  .hint { position: absolute; left: clamp(18px, 4vw, 44px); bottom: clamp(22px, 4vw, 44px); margin: 0; font-size: .85rem; color: var(--muted); max-width: 15rem; line-height: 1.4; pointer-events: none; }
+
+  .status { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font-family: var(--serif); font-style: italic; font-size: 1.4rem; color: var(--muted); pointer-events: none; transition: opacity .5s; }
+  .status.off { opacity: 0; }
+  .flash { position: fixed; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+  .flash.on { animation: fl .45s ease-out; }
+  @keyframes fl { 0% { opacity: .85 } 100% { opacity: 0 } }
+
+  @media (max-width: 760px) {
+    .hint { display: none; }
+    .dock { left: 12px; right: 12px; transform: none; justify-content: space-between; border-radius: 22px; flex-wrap: wrap; }
+    .dock button { padding: .7rem .8rem; font-size: .88rem; }
+    .sep { display: none; }
+    .dock .shoot { flex: 1 1 100%; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) { .flash.on { animation-duration: .01s; } .status { transition: none; } }
+</style>
+</head>
+<body>
+<main class="stage">
+  <canvas id="c" tabindex="0" role="img" aria-label="Modelo 3D interativo da câmera mirrorless LM-01 com lente 35mm. Arraste para girar."></canvas>
+
+  <div class="count" aria-live="polite"><b id="shots">0000</b><span>disparos</span></div>
+
+  <p class="hint">Arraste para girar. Role ou faça pinça para aproximar.</p>
+
+  <nav class="dock" aria-label="Controles da câmera">
+    <div class="views" role="group" aria-label="Ângulo">
+      <button type="button" data-view="three" aria-pressed="true">¾</button>
+      <button type="button" data-view="front" aria-pressed="false">Frente</button>
+      <button type="button" data-view="top" aria-pressed="false">Topo</button>
+      <button type="button" data-view="back" aria-pressed="false">Traseira</button>
+    </div>
+    <span class="sep"></span>
+    <button type="button" id="spin" aria-pressed="true">Girar</button>
+    <button type="button" class="shoot" id="shoot"><i></i>Disparar</button>
+  </nav>
+
+  <p class="status" id="status">Montando a câmera…</p>
+  <div class="flash" id="flash"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js"></script>
+<script>
+window.addEventListener('error', function () { var el = document.getElementById('status'); if (el) el.textContent = 'O 3D encontrou um erro ao carregar. Recarregue a página.'; });
+(function () {
+  const statusEl = document.getElementById('status');
+  if (!window.THREE) { statusEl.textContent = 'Não foi possível carregar o 3D. Recarregue a página.'; return; }
+
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById('c');
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  } catch (e) {
+    statusEl.textContent = 'Seu navegador não suporta WebGL. Tente outro navegador para ver a câmera em 3D.';
+    return;
+  }
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 200);
+  const target = new THREE.Vector3(0.4, 0, 0.6);
+
+  if (THREE.RoomEnvironment) {
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new THREE.RoomEnvironment(), 0.04).texture;
+  }
+
+  /* ---------- luzes ---------- */
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x222018, 0.35));
+  const key = new THREE.DirectionalLight(0xffffff, 1.6);
+  key.position.set(8, 16, 12);
+  key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  Object.assign(key.shadow.camera, { left: -12, right: 12, top: 12, bottom: -12, near: 1, far: 50 });
+  key.shadow.radius = 6;
+  key.shadow.bias = -0.0005;
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0xff4a1c, 0.9);
+  rim.position.set(-12, 6, -10);
+  scene.add(rim);
+  const fill = new THREE.DirectionalLight(0xdfe8ff, 0.4);
+  fill.position.set(-10, 2, 12);
+  scene.add(fill);
+
+  /* ---------- texturas procedurais ---------- */
+  function canvasTex(w, h, draw, opts = {}) {
+    const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+    const ctx = cv.getContext('2d'); draw(ctx, w, h);
+    const t = new THREE.CanvasTexture(cv);
+    if (opts.repeat) { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(opts.repeat[0], opts.repeat[1]); }
+    if (opts.srgb) t.encoding = THREE.sRGBEncoding;
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    t.userData = { cv, ctx, draw };
+    return t;
+  }
+
+  const leatherTex = canvasTex(512, 512, (c, w, h) => {
+    c.fillStyle = '#808080'; c.fillRect(0, 0, w, h);
+    for (let i = 0; i < 9000; i++) {
+      const v = Math.random() < .5 ? 40 + Math.random() * 50 : 150 + Math.random() * 60;
+      c.fillStyle = `rgb(${v},${v},${v})`;
+      c.beginPath(); c.arc(Math.random() * w, Math.random() * h, 1 + Math.random() * 2.6, 0, Math.PI * 2); c.fill();
+    }
+  }, { repeat: [0.3, 0.3] });
+
+  const knurl = (n) => canvasTex(16, 4, (c) => {
+    c.fillStyle = '#fff'; c.fillRect(0, 0, 16, 4); c.fillStyle = '#000'; c.fillRect(0, 0, 8, 4);
+  }, { repeat: [n, 1] });
+
+  /* ---------- materiais ---------- */
+  const M = {
+    leather: new THREE.MeshStandardMaterial({ color: 0x151515, roughness: .88, metalness: 0, bumpMap: leatherTex, bumpScale: .025 }),
+    plate: new THREE.MeshPhysicalMaterial({ color: 0x1d1d1f, roughness: .42, metalness: .55, clearcoat: .3, clearcoatRoughness: .5 }),
+    rubber: new THREE.MeshStandardMaterial({ color: 0x0f0f0f, roughness: .96 }),
+    chrome: new THREE.MeshStandardMaterial({ color: 0xd8d8d8, roughness: .18, metalness: 1 }),
+    satin: new THREE.MeshStandardMaterial({ color: 0x8a8a8c, roughness: .38, metalness: 1 }),
+    black: new THREE.MeshStandardMaterial({ color: 0x050505, roughness: .6 }),
+    accent: new THREE.MeshStandardMaterial({ color: 0xff4a1c, roughness: .35, metalness: .2, emissive: 0x331005 }),
+    lensBody: new THREE.MeshPhysicalMaterial({ color: 0x141414, roughness: .35, metalness: .45, clearcoat: .6, clearcoatRoughness: .3 }),
+    knurlFine: new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: .5, metalness: .6, bumpMap: knurl(140), bumpScale: .03 }),
+    knurlRubber: new THREE.MeshStandardMaterial({ color: 0x111111, roughness: .9, bumpMap: knurl(90), bumpScale: .05 }),
+    knurlDial: new THREE.MeshStandardMaterial({ color: 0x2a2a2c, roughness: .35, metalness: .9, bumpMap: knurl(60), bumpScale: .04 }),
+    glass: new THREE.MeshPhysicalMaterial({ color: 0x0b0f1e, roughness: .02, metalness: .1, clearcoat: 1, clearcoatRoughness: 0, envMapIntensity: 2.4, transparent: true, opacity: .82 }),
+    coating: new THREE.MeshPhysicalMaterial({ color: 0x1a1030, roughness: .08, metalness: .8, clearcoat: 1, envMapIntensity: 2, emissive: 0x0a0418 }),
+    eyepiece: new THREE.MeshPhysicalMaterial({ color: 0x050608, roughness: .05, clearcoat: 1 }),
+  };
+
+  /* ---------- helpers de geometria ---------- */
+  function rrShape(w, h, [tl, tr, br, bl]) {
+    const s = new THREE.Shape(), x = -w / 2, y = -h / 2;
+    s.moveTo(x + bl, y);
+    s.lineTo(x + w - br, y); s.quadraticCurveTo(x + w, y, x + w, y + br);
+    s.lineTo(x + w, y + h - tr); s.quadraticCurveTo(x + w, y + h, x + w - tr, y + h);
+    s.lineTo(x + tl, y + h); s.quadraticCurveTo(x, y + h, x, y + h - tl);
+    s.lineTo(x, y + bl); s.quadraticCurveTo(x, y, x + bl, y);
+    return s;
+  }
+  function slab(w, h, d, radii, b) {
+    const shape = rrShape(w - 2 * b, h - 2 * b, radii.map(r => Math.max(r - b, 0.01)));
+    const g = new THREE.ExtrudeGeometry(shape, { depth: d - 2 * b, bevelEnabled: true, bevelThickness: b, bevelSize: b, bevelSegments: 6, curveSegments: 24 });
+    g.translate(0, 0, -(d - 2 * b) / 2);
+    g.computeVertexNormals();
+    return g;
+  }
+  function mesh(geo, mat, x = 0, y = 0, z = 0, parent) {
+    const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z);
+    m.castShadow = true; m.receiveShadow = true;
+    (parent || rig).add(m); return m;
+  }
+  // cilindro no eixo Z (para frente / para trás)
+  function zCyl(r, len, mat, x, y, z, seg = 96, open = false) {
+    const g = new THREE.CylinderGeometry(r, r, len, seg, 1, open); g.rotateX(Math.PI / 2);
+    return mesh(g, mat, x, y, z + len / 2);
+  }
+  // cilindro no eixo Y (em pé sobre o topo)
+  function yCyl(r, h, mat, x, y, z, parent) {
+    return mesh(new THREE.CylinderGeometry(r, r, h, 72), mat, x, y + h / 2, z, parent);
+  }
+
+  const t0 = performance.now();
+  let lcdFlash = 0;
+  const rig = new THREE.Group();
+  scene.add(rig);
+
+  /* ---------- corpo ---------- */
+  const TOP = 3.8, FRONT = 1.7, BACK = -1.7;
+  mesh(slab(12.6, 5.8, 3.4, [.3, .3, 1.0, 1.0], .18), M.leather, 0, -0.9, 0);
+  mesh(slab(12.6, 1.8, 3.4, [.9, .9, .2, .2], .18), M.plate, 0, 2.9, 0);
+  // empunhadura
+  mesh(slab(3.2, 5.4, 1.6, [1.3, 1.3, 1.1, 1.1], .6), M.leather, -4.5, -1.0, 2.05);
+  // luz de AF / temporizador
+  zCyl(.16, .06, M.accent, -2.35, 1.35, FRONT - .02, 32);
+
+  /* ---------- lente 35mm ---------- */
+  const LX = 0.9, LY = -0.55;
+  let z = FRONT;
+  const lensParts = [
+    [2.62, .16, M.chrome],
+    [2.38, .28, M.lensBody],
+    [2.46, .62, M.knurlFine],
+    [2.36, .3, M.lensBody],
+    [2.56, 1.35, M.knurlRubber],
+    [2.42, .5, M.lensBody],
+    [2.5, .14, M.satin],
+  ];
+  lensParts.forEach(([r, len, mat]) => { zCyl(r, len, mat, LX, LY, z); z += len; });
+  const LFRONT = z;
+  // marca de índice na lente
+  mesh(new THREE.BoxGeometry(.05, .05, .5), M.accent, LX, LY + 2.38, FRONT + .5);
+  // anel frontal interno e fundo escuro
+  const tube = new THREE.CylinderGeometry(2.2, 2.2, 1.0, 96, 1, true); tube.rotateX(Math.PI / 2);
+  const tubeMat = new THREE.MeshStandardMaterial({ color: 0x030303, roughness: .9, side: THREE.BackSide });
+  mesh(tube, tubeMat, LX, LY, LFRONT - .5);
+  const lip = new THREE.RingGeometry(2.05, 2.5, 96);
+  mesh(lip, M.black, LX, LY, LFRONT + .001);
+  // elementos de vidro
+  const R = 3.2, th = Math.asin(2.05 / R);
+  const capGeo = new THREE.SphereGeometry(R, 96, 24, 0, Math.PI * 2, 0, th); capGeo.rotateX(Math.PI / 2);
+  const cap = mesh(capGeo, M.glass, LX, LY, LFRONT - .12 - R);
+  cap.castShadow = false;
+  const R2 = 2.2, th2 = Math.asin(1.4 / R2);
+  const inGeo = new THREE.SphereGeometry(R2, 64, 16, 0, Math.PI * 2, 0, th2); inGeo.rotateX(Math.PI / 2);
+  mesh(inGeo, M.coating, LX, LY, LFRONT - .75 - R2);
+  const aperture = new THREE.RingGeometry(1.35, 2.2, 96);
+  mesh(aperture, M.black, LX, LY, LFRONT - .95);
+  // botão de liberação da lente
+  zCyl(.34, .18, M.satin, LX + 3.05, LY - 1.45, FRONT, 48);
+
+  /* ---------- topo ---------- */
+  // disparador
+  const shutter = new THREE.Group(); shutter.position.set(-4.6, TOP, 1.0); rig.add(shutter);
+  yCyl(.66, .16, M.satin, 0, 0, 0, shutter);
+  yCyl(.46, .06, M.accent, 0, .16, 0, shutter);
+  const shutterBtn = yCyl(.4, .2, M.chrome, 0, .18, 0, shutter);
+  // seletor de modos com topo gravado
+  const dialTop = canvasTex(512, 512, (c, w) => {
+    c.fillStyle = '#232325'; c.fillRect(0, 0, w, w);
+    c.translate(w / 2, w / 2);
+    ['M', 'S', 'A', 'P', 'AUTO', '1', '2', 'V'].forEach((t, i) => {
+      c.save(); c.rotate(i * Math.PI / 4); c.fillStyle = t === 'V' ? '#ff4a1c' : '#e9e4da';
+      c.font = '600 58px "Bricolage Grotesque", system-ui, sans-serif'; c.textAlign = 'center';
+      c.fillText(t, 0, -165); c.restore();
+    });
+    c.beginPath(); c.arc(0, 0, 90, 0, Math.PI * 2); c.strokeStyle = '#3a3a3d'; c.lineWidth = 6; c.stroke();
+  }, { srgb: true });
+  const modeDial = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, .6, 96), [
+    M.knurlDial, new THREE.MeshStandardMaterial({ map: dialTop, roughness: .45, metalness: .5 }), M.plate,
+  ]);
+  modeDial.position.set(-2.35, TOP + .3, 0.05); modeDial.castShadow = true; rig.add(modeDial);
+  yCyl(1.05, .08, M.plate, -2.35, TOP, 0.05);
+  // sapata
+  mesh(new THREE.BoxGeometry(1.9, .1, 1.8), M.satin, LX, TOP + .05, 0);
+  mesh(new THREE.BoxGeometry(.18, .18, 1.8), M.satin, LX - .95, TOP + .14, 0);
+  mesh(new THREE.BoxGeometry(.18, .18, 1.8), M.satin, LX + .95, TOP + .14, 0);
+  mesh(new THREE.BoxGeometry(1.2, .02, 1.2), M.black, LX, TOP + .11, 0);
+  // seletor de compensação
+  const expDial = new THREE.Mesh(new THREE.CylinderGeometry(.82, .82, .5, 96), [M.knurlDial, M.plate, M.plate]);
+  expDial.position.set(3.25, TOP + .25, 0.35); expDial.castShadow = true; rig.add(expDial);
+  mesh(new THREE.BoxGeometry(.04, .02, .35), M.accent, 3.25, TOP + .51, 0.9);
+  // botão fn
+  yCyl(.28, .12, M.satin, 5.1, TOP, .9);
+
+  /* ---------- traseira ---------- */
+  // visor eletrônico (canto, estilo telêmetro)
+  mesh(slab(2.6, 1.9, 1.0, [.5, .5, .5, .5], .28), M.rubber, 4.3, 2.85, BACK - .38);
+  const eye = new THREE.Mesh(new THREE.PlaneGeometry(1.5, .95), M.eyepiece);
+  eye.rotation.y = Math.PI; eye.position.set(4.3, 2.85, BACK - .881); rig.add(eye);
+  // moldura da tela
+  mesh(slab(7.5, 4.8, .22, [.28, .28, .28, .28], .07), M.black, 1.2, -0.95, BACK - .1);
+
+  // tela com HUD
+  const lcd = canvasTex(1024, 640, drawLCD, { srgb: true });
+  const screenMat = new THREE.MeshBasicMaterial({ map: lcd, toneMapped: false });
+  const screen = new THREE.Mesh(new THREE.PlaneGeometry(7.1, 4.4), screenMat);
+  screen.rotation.y = Math.PI; screen.position.set(1.2, -0.95, BACK - .212); rig.add(screen);
+  const screenGloss = new THREE.Mesh(new THREE.PlaneGeometry(7.1, 4.4),
+    new THREE.MeshPhysicalMaterial({ color: 0x000000, roughness: .05, transparent: true, opacity: .18, clearcoat: 1 }));
+  screenGloss.rotation.y = Math.PI; screenGloss.position.set(1.2, -0.95, BACK - .214); rig.add(screenGloss);
+
+  // roda de controle
+  const wheel = new THREE.Mesh(new THREE.CylinderGeometry(.82, .82, .2, 96), [M.knurlDial, M.plate, M.plate]);
+  wheel.rotation.x = Math.PI / 2; wheel.position.set(-4.45, -1.3, BACK - .1); wheel.castShadow = true; rig.add(wheel);
+  zCyl(.32, .12, M.satin, -4.45, -1.3, BACK - .3, 48);
+  [[-4.45, .55], [-5.35, -2.85], [-3.55, -2.85], [-3.3, 2.75]].forEach(([x, y], i) =>
+    zCyl(i === 3 ? .34 : .26, .14, i === 3 ? M.satin : M.plate, x, y, BACK - .14, 48));
+  // apoio de polegar
+  mesh(slab(1.7, 1.1, .2, [.45, .45, .45, .45], .08), M.rubber, -5.2, 2.55, BACK - .06);
+
+  /* ---------- detalhes ---------- */
+  [-6.42, 6.42].forEach(x => {
+    const lug = mesh(new THREE.TorusGeometry(.3, .075, 16, 40), M.satin, x, 3.15, .2);
+    lug.rotation.y = Math.PI / 2;
+  });
+  // tampa de portas na lateral
+  const door = mesh(slab(2.6, 3.4, .12, [.2, .2, .2, .2], .05), M.rubber, 6.33, -0.6, 0);
+  door.rotation.y = Math.PI / 2;
+  // rosca de tripé
+  const tri = new THREE.Mesh(new THREE.CircleGeometry(.36, 32), M.satin);
+  tri.rotation.x = Math.PI / 2; tri.position.set(LX, -3.805, 0); rig.add(tri);
+
+  // decalque frontal
+  const decal = canvasTex(512, 128, (c, w, h) => {
+    c.clearRect(0, 0, w, h);
+    c.fillStyle = '#ff4a1c'; c.fillRect(24, 40, 44, 44);
+    c.fillStyle = '#ece6dc'; c.font = '800 92px "Bricolage Grotesque", system-ui, sans-serif';
+    c.textBaseline = 'middle'; c.fillText('LM', 84, 66);
+    c.font = '400 44px "Bricolage Grotesque", system-ui, sans-serif'; c.fillStyle = '#9a948b';
+    c.fillText('01', 270, 70);
+  }, { srgb: true });
+  const decalMesh = new THREE.Mesh(new THREE.PlaneGeometry(2.6, .65),
+    new THREE.MeshStandardMaterial({ map: decal, transparent: true, roughness: .5, metalness: .2 }));
+  decalMesh.position.set(4.3, 2.95, FRONT + .004); rig.add(decalMesh);
+
+  /* ---------- sombra no chão ---------- */
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: .32 }));
+  floor.rotation.x = -Math.PI / 2; floor.position.y = -3.82; floor.receiveShadow = true;
+  scene.add(floor);
+
+  /* ---------- HUD da tela traseira ---------- */
+  function drawLCD(c, w, h) {
+    const g = c.createLinearGradient(0, 0, w, h);
+    g.addColorStop(0, '#1a2a2f'); g.addColorStop(.55, '#2d2a3a'); g.addColorStop(1, '#3c2418');
+    c.fillStyle = g; c.fillRect(0, 0, w, h);
+    const bokeh = [[180, 190, 90, 'rgba(255,190,120,.22)'], [760, 150, 120, 'rgba(255,120,80,.18)'], [620, 470, 70, 'rgba(160,200,255,.18)'], [300, 480, 110, 'rgba(255,74,28,.14)'], [900, 400, 60, 'rgba(255,230,190,.2)']];
+    bokeh.forEach(([x, y, r, col]) => { c.fillStyle = col; c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill(); });
+    c.strokeStyle = 'rgba(238,232,222,.18)'; c.lineWidth = 1.5;
+    [w / 3, 2 * w / 3].forEach(x => { c.beginPath(); c.moveTo(x, 0); c.lineTo(x, h); c.stroke(); });
+    [h / 3, 2 * h / 3].forEach(y => { c.beginPath(); c.moveTo(0, y); c.lineTo(w, y); c.stroke(); });
+    c.strokeStyle = '#eee8de'; c.lineWidth = 5; const m = 40, l = 48;
+    [[m, m, 1, 1], [w - m, m, -1, 1], [m, h - m, 1, -1], [w - m, h - m, -1, -1]].forEach(([x, y, sx, sy]) => {
+      c.beginPath(); c.moveTo(x, y + sy * l); c.lineTo(x, y); c.lineTo(x + sx * l, y); c.stroke();
+    });
+    const f = '"Bricolage Grotesque", system-ui, sans-serif';
+    const s = (performance.now() - t0) / 1000;
+    const fr = Math.floor(s * 24) % 24, sec = Math.floor(s) % 60, min = Math.floor(s / 60) % 60;
+    const pad = n => String(n).padStart(2, '0');
+    c.fillStyle = (Math.floor(s * 2) % 2) ? '#ff4a1c' : 'rgba(255,74,28,.35)';
+    c.beginPath(); c.arc(84, 92, 12, 0, Math.PI * 2); c.fill();
+    c.fillStyle = '#eee8de'; c.font = `600 32px ${f}`; c.textBaseline = 'middle';
+    c.fillText('REC', 108, 93);
+    c.font = `400 32px ${f}`; c.fillText(`00:${pad(min)}:${pad(sec)}:${pad(fr)}`, 190, 93);
+    c.textAlign = 'right'; c.fillText('ISO 100    f/1.4    1/50', w - 80, 93);
+    c.fillText('4K  24p  LOG', w - 80, h - 80);
+    c.textAlign = 'left';
+    c.strokeStyle = '#ff4a1c'; c.lineWidth = 4; c.strokeRect(w / 2 - 70, h / 2 - 50, 140, 100);
+    c.fillStyle = '#ff4a1c'; c.font = `600 24px ${f}`; c.fillText('AF', w / 2 - 66, h / 2 - 72);
+    for (let i = 0; i < 48; i++) {
+      const v = Math.exp(-Math.pow((i - 20) / 9, 2)) * 60 + Math.random() * 6 + 4;
+      c.fillStyle = 'rgba(238,232,222,.55)'; c.fillRect(80 + i * 4, h - 70 - v, 3, v);
+    }
+    if (lcdFlash > 0) { c.fillStyle = `rgba(255,255,255,${lcdFlash})`; c.fillRect(0, 0, w, h); }
+  }
+  function redrawLCD() { const u = lcd.userData; u.ctx.setTransform(1, 0, 0, 1, 0, 0); u.draw(u.ctx, 1024, 640); lcd.needsUpdate = true; }
+
+  // redesenha texturas com a fonte já carregada
+  if (document.fonts && document.fonts.load) {
+    Promise.all([
+      document.fonts.load('800 92px "Bricolage Grotesque"'),
+      document.fonts.load('600 58px "Bricolage Grotesque"'),
+    ]).then(() => {
+      [decal, dialTop].forEach(t => { const u = t.userData; u.ctx.setTransform(1, 0, 0, 1, 0, 0); u.draw(u.ctx, u.cv.width, u.cv.height); t.needsUpdate = true; });
+    }).catch(() => {});
+  }
+
+  /* ---------- câmera e controles ---------- */
+  const controls = new THREE.OrbitControls(camera, canvas);
+  controls.target.copy(target);
+  controls.enableDamping = true; controls.dampingFactor = .07;
+  controls.enablePan = false;
+  controls.minDistance = 13; controls.maxDistance = 45;
+  controls.autoRotate = !reduced; controls.autoRotateSpeed = .9;
+
+  const VIEWS = {
+    three: new THREE.Vector3(15, 7, 21),
+    front: new THREE.Vector3(0.4, 1.2, 28),
+    top: new THREE.Vector3(0.4, 28, 4),
+    back: new THREE.Vector3(0.4, 2.5, -27),
+  };
+  camera.position.copy(VIEWS.three);
+
+  let tween = null;
+  function goTo(name) {
+    const from = new THREE.Spherical().setFromVector3(camera.position.clone().sub(target));
+    const to = new THREE.Spherical().setFromVector3(VIEWS[name].clone().sub(target));
+    to.phi = Math.max(.15, to.phi);
+    let d = to.theta - from.theta;
+    d = ((d + Math.PI) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2) - Math.PI;
+    to.theta = from.theta + d;
+    tween = { from, to, t: performance.now(), dur: reduced ? 1 : 1000 };
+    controls.enabled = false;
+  }
+  const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+
+  const viewBtns = document.querySelectorAll('[data-view]');
+  const spinBtn = document.getElementById('spin');
+  spinBtn.setAttribute('aria-pressed', String(controls.autoRotate));
+  function setSpin(on) { controls.autoRotate = on; spinBtn.setAttribute('aria-pressed', String(on)); }
+  viewBtns.forEach(b => b.addEventListener('click', () => {
+    viewBtns.forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+    setSpin(false); goTo(b.dataset.view);
+  }));
+  spinBtn.addEventListener('click', () => setSpin(!controls.autoRotate));
+  controls.addEventListener('start', () => viewBtns.forEach(o => o.setAttribute('aria-pressed', 'false')));
+
+  // teclado no canvas
+  canvas.addEventListener('keydown', e => {
+    const step = .12, s = new THREE.Spherical().setFromVector3(camera.position.clone().sub(target));
+    if (e.key === 'ArrowLeft') s.theta -= step; else if (e.key === 'ArrowRight') s.theta += step;
+    else if (e.key === 'ArrowUp') s.phi = Math.max(.15, s.phi - step); else if (e.key === 'ArrowDown') s.phi = Math.min(Math.PI - .15, s.phi + step);
+    else return;
+    e.preventDefault(); setSpin(false);
+    camera.position.setFromSpherical(s).add(target);
+  });
+
+  /* ---------- disparo ---------- */
+  let shots = 0, press = 0;
+  const shotsEl = document.getElementById('shots'), flashEl = document.getElementById('flash');
+  document.getElementById('shoot').addEventListener('click', () => {
+    shots++; shotsEl.textContent = String(shots).padStart(4, '0');
+    press = performance.now(); lcdFlash = 1;
+    flashEl.classList.remove('on'); void flashEl.offsetWidth; flashEl.classList.add('on');
+    try { parent.postMessage({ source: 'lm01-camera', type: 'shoot', shots }, '*'); } catch (e) {}
+  });
+
+  /* ---------- tamanho e loop ---------- */
+  function resize() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.fov = w / h < .8 ? 44 : 32;
+    camera.updateProjectionMatrix();
+  }
+  addEventListener('resize', resize);
+  resize();
+
+  let lastLCD = 0, first = true;
+  function frame(now) {
+    requestAnimationFrame(frame);
+    if (tween) {
+      const k = Math.min(1, (now - tween.t) / tween.dur), e = ease(k);
+      const s = new THREE.Spherical(
+        tween.from.radius + (tween.to.radius - tween.from.radius) * e,
+        tween.from.phi + (tween.to.phi - tween.from.phi) * e,
+        tween.from.theta + (tween.to.theta - tween.from.theta) * e);
+      camera.position.setFromSpherical(s).add(target);
+      camera.lookAt(target);
+      if (k >= 1) { tween = null; controls.enabled = true; }
+    } else controls.update();
+
+    // animação do disparador
+    const dt = now - press;
+    shutterBtn.position.y = .28 - (dt < 90 ? .09 : dt < 220 ? .09 * (1 - (dt - 90) / 130) : 0);
+    if (lcdFlash > 0) lcdFlash = Math.max(0, 1 - dt / 350);
+
+    if (now - lastLCD > 80) { redrawLCD(); lastLCD = now; }
+    renderer.render(scene, camera);
+    if (first) { first = false; statusEl.classList.add('off'); }
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

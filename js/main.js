@@ -479,18 +479,19 @@
   });
 
   /* ------------------------------------------------------------------------
-     Galeria — flash da câmera 3D ao entrar em tela + lightbox das fotos
+     Galeria — a câmera 3D (iframe próprio, Three.js) avisa por postMessage
+     quando o botão "Disparar" é clicado; a grade de fotos pisca em resposta.
      ------------------------------------------------------------------------ */
-  const camFlash = $('.cam3d__flash');
-  if (camFlash && !reduced) {
-    const flashIO = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        camFlash.classList.add('in');
-        flashIO.unobserve(camFlash);
-      });
-    }, { threshold: .5 });
-    flashIO.observe(camFlash);
+  const galGrid = $('#galGrid');
+  const galCamFrame = $('#galCamFrame');
+  if (galGrid && galCamFrame && !reduced) {
+    addEventListener('message', (e) => {
+      if (e.source !== galCamFrame.contentWindow) return;
+      if (!e.data || e.data.source !== 'lm01-camera' || e.data.type !== 'shoot') return;
+      galGrid.classList.remove('is-flash');
+      void galGrid.offsetWidth;
+      galGrid.classList.add('is-flash');
+    });
   }
 
   const lightbox = $('#lightbox');
