@@ -479,6 +479,60 @@
   });
 
   /* ------------------------------------------------------------------------
+     Galeria — flash da câmera 3D ao entrar em tela + lightbox das fotos
+     ------------------------------------------------------------------------ */
+  const camFlash = $('.cam3d__flash');
+  if (camFlash && !reduced) {
+    const flashIO = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        camFlash.classList.add('in');
+        flashIO.unobserve(camFlash);
+      });
+    }, { threshold: .5 });
+    flashIO.observe(camFlash);
+  }
+
+  const lightbox = $('#lightbox');
+  if (lightbox) {
+    const lbImg = $('#lightboxImg');
+    const lbCap = $('#lightboxCap');
+    const lbClose = $('#lightboxClose');
+    let lastFocus = null;
+
+    const openLightbox = (tile) => {
+      const thumb = $('.gtile__img', tile);
+      const cs = getComputedStyle(thumb);
+      lbImg.style.setProperty('--a', cs.getPropertyValue('--a') || '#333');
+      lbImg.style.setProperty('--b', cs.getPropertyValue('--b') || '#111');
+      lbImg.textContent = '';
+      if (thumb.tagName === 'IMG') {
+        const full = document.createElement('img');
+        full.src = thumb.currentSrc || thumb.src;
+        full.alt = thumb.alt || '';
+        lbImg.append(full);
+      }
+      lbCap.textContent = tile.dataset.cap || '';
+      lastFocus = document.activeElement;
+      lightbox.classList.add('is-open');
+      lightbox.setAttribute('aria-hidden', 'false');
+      lbClose.focus();
+      document.body.style.overflow = 'hidden';
+    };
+    const closeLightbox = () => {
+      lightbox.classList.remove('is-open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (lastFocus) lastFocus.focus();
+    };
+
+    $$('.gtile').forEach((tile) => tile.addEventListener('click', () => openLightbox(tile)));
+    lbClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox(); });
+  }
+
+  /* ------------------------------------------------------------------------
      Botões de contato — efeito "bolha de sabão" (SVG goo)
      Uma bolha acompanha o cursor; ao chegar perto de um botão, a bolha do
      botão acorda e as duas se fundem pelo filtro #goo, como no iOS.

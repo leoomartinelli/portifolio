@@ -55,8 +55,9 @@
       <a href="#stack"><i>03</i>Stack</a>
       <a href="#automacao"><i>04</i>Automação</a>
       <a href="#lente"><i>05</i>Lente</a>
-      <a href="#projetos"><i>06</i>Projetos</a>
-      <a href="#contato"><i>07</i>Contato</a>
+      <a href="#galeria"><i>06</i>Galeria</a>
+      <a href="#projetos"><i>07</i>Projetos</a>
+      <a href="#contato"><i>08</i>Contato</a>
     </nav>
     <button class="nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
   </header>
@@ -67,8 +68,9 @@
     <a href="#stack"><i>03</i>Stack</a>
     <a href="#automacao"><i>04</i>Automação</a>
     <a href="#lente"><i>05</i>Lente</a>
-    <a href="#projetos"><i>06</i>Projetos</a>
-    <a href="#contato"><i>07</i>Contato</a>
+    <a href="#galeria"><i>06</i>Galeria</a>
+    <a href="#projetos"><i>07</i>Projetos</a>
+    <a href="#contato"><i>08</i>Contato</a>
   </div>
 
   <!-- HUD fixo: timecode + cena atual -->
@@ -426,10 +428,116 @@ leonardo.criar('seu projeto').then(console.log);</pre>
       </div>
     </section>
 
-    <!-- ─────────── 06 · PROJETOS (próximos lançamentos) ─────────── -->
+    <!-- ─────────── 06 · GALERIA (câmera 3D girando; um flash revela as fotos) ─────────── -->
+    <section class="gal" id="galeria" data-scene="Galeria">
+      <div class="gal__head">
+        <p class="eyebrow"><b>06</b> Galeria</p>
+        <h2 class="h2" data-reveal>Do outro lado<br>d<em>a lente</em>.</h2>
+        <p class="gal__lead" data-reveal>
+          Fotos que eu mesmo tirei — sem banco de imagens. Clique numa pra ampliar.
+        </p>
+      </div>
+
+      <div class="gal__stage">
+        <!-- câmera 100% CSS (sem imagem/modelo 3D importado): um cubo preserve-3d
+             com 6 faces detalhadas, girando sem parar. O flash dispara quando
+             a galeria entra em tela, meio segundo antes das fotos aparecerem. -->
+        <div class="cam3d">
+          <div class="cam3d__spin">
+            <div class="cam3d__face cam3d__face--front">
+              <span class="cam3d__evf"></span>
+              <span class="cam3d__hotshoe"></span>
+              <span class="cam3d__mount">
+                <span class="cam3d__mount-ring"></span>
+                <span class="cam3d__mount-glass"></span>
+              </span>
+              <span class="cam3d__grip"></span>
+              <span class="cam3d__shutter"></span>
+              <span class="cam3d__logo">α7III</span>
+            </div>
+            <div class="cam3d__face cam3d__face--back">
+              <span class="cam3d__evfcup"></span>
+              <span class="cam3d__screen"><i></i></span>
+              <span class="cam3d__pad">
+                <i></i><i></i><i></i><i></i><span></span>
+              </span>
+              <span class="cam3d__dial cam3d__dial--back"></span>
+            </div>
+            <div class="cam3d__face cam3d__face--top">
+              <span class="cam3d__evftop"></span>
+              <span class="cam3d__dial cam3d__dial--mode"></span>
+              <span class="cam3d__dial cam3d__dial--exp"></span>
+              <span class="cam3d__shutter-top"></span>
+              <span class="cam3d__brand">SONY</span>
+            </div>
+            <div class="cam3d__face cam3d__face--bottom">
+              <span class="cam3d__tripod"></span>
+              <span class="cam3d__seam"></span>
+            </div>
+            <div class="cam3d__face cam3d__face--left">
+              <span class="cam3d__port"></span>
+              <span class="cam3d__lug"></span>
+            </div>
+            <div class="cam3d__face cam3d__face--right">
+              <span class="cam3d__doorline"></span>
+              <span class="cam3d__lug"></span>
+            </div>
+          </div>
+          <span class="cam3d__shadow" aria-hidden="true"></span>
+          <span class="cam3d__flash" aria-hidden="true"></span>
+        </div>
+
+        <div class="gal__grid" id="galGrid">
+          <!-- Placeholders — troque cada .gtile__img por <img class="gtile__img" src="assets/galeria/nome.jpg" alt="descrição"> -->
+          <button class="gtile" data-reveal data-cap="Fim de tarde · f/4 · 1/250s · ISO 100">
+            <span class="gtile__img" style="--a:#ff8a3d;--b:#3a1208"></span>
+            <span class="gtile__cap">Fim de tarde <small>f/4 · 1/250s · ISO 100</small></span>
+          </button>
+          <button class="gtile" data-reveal data-cap="Retrato · f/1.8 · 1/200s · ISO 200">
+            <span class="gtile__img" style="--a:#6b5850;--b:#0e0b0a"></span>
+            <span class="gtile__cap">Retrato <small>f/1.8 · 1/200s · ISO 200</small></span>
+          </button>
+          <button class="gtile" data-reveal data-cap="Rua à noite · f/2.8 · 1/60s · ISO 1600">
+            <span class="gtile__img" style="--a:#2a3a5c;--b:#050710"></span>
+            <span class="gtile__cap">Rua à noite <small>f/2.8 · 1/60s · ISO 1600</small></span>
+          </button>
+          <button class="gtile" data-reveal data-cap="Céu aberto · f/8 · 1/1000s · ISO 100">
+            <span class="gtile__img" style="--a:#bfe3ef;--b:#2a5f72"></span>
+            <span class="gtile__cap">Céu aberto <small>f/8 · 1/1000s · ISO 100</small></span>
+          </button>
+          <button class="gtile" data-reveal data-cap="Detalhe · f/2 · 1/320s · ISO 100">
+            <span class="gtile__img" style="--a:#8a7a5a;--b:#1a140c"></span>
+            <span class="gtile__cap">Detalhe <small>f/2 · 1/320s · ISO 100</small></span>
+          </button>
+          <button class="gtile" data-reveal data-cap="Verde · f/3.5 · 1/500s · ISO 200">
+            <span class="gtile__img" style="--a:#5c7a4a;--b:#0d1608"></span>
+            <span class="gtile__cap">Verde <small>f/3.5 · 1/500s · ISO 200</small></span>
+          </button>
+          <button class="gtile" data-reveal data-cap="Preto e branco · f/5.6 · 1/250s · ISO 400">
+            <span class="gtile__img" style="--a:#9a9a9a;--b:#141414"></span>
+            <span class="gtile__cap">Preto e branco <small>f/5.6 · 1/250s · ISO 400</small></span>
+          </button>
+          <button class="gtile" data-reveal data-cap="Estrada · f/4 · 1/640s · ISO 100">
+            <span class="gtile__img" style="--a:#c98a4a;--b:#241206"></span>
+            <span class="gtile__cap">Estrada <small>f/4 · 1/640s · ISO 100</small></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- lightbox da galeria -->
+    <div class="lightbox" id="lightbox" aria-hidden="true">
+      <button class="lightbox__close" id="lightboxClose" aria-label="Fechar">✕</button>
+      <div class="lightbox__frame">
+        <span class="lightbox__img" id="lightboxImg"></span>
+        <p class="lightbox__cap" id="lightboxCap"></p>
+      </div>
+    </div>
+
+    <!-- ─────────── 07 · PROJETOS (próximos lançamentos) ─────────── -->
     <section class="work" id="projetos" data-scene="Projetos">
       <div class="work__head">
-        <p class="eyebrow"><b>06</b> Projetos</p>
+        <p class="eyebrow"><b>07</b> Projetos</p>
         <h2 class="h2 rgb" data-reveal>Próximos <em>lançamentos</em>.</h2>
         <p class="work__lead" data-reveal>
           Esta sessão está em montagem. Enquanto os projetos não estreiam, o código fica no GitHub.
@@ -461,10 +569,10 @@ leonardo.criar('seu projeto').then(console.log);</pre>
     </section>
   </main>
 
-  <!-- ─────────── 07 · CONTATO ─────────── -->
+  <!-- ─────────── 08 · CONTATO ─────────── -->
   <footer class="contact" id="contato" data-scene="Fim de cena">
     <div class="contact__in">
-      <p class="eyebrow"><b>07</b> Contato</p>
+      <p class="eyebrow"><b>08</b> Contato</p>
       <h2 class="contact__h rgb">Vamos criar<br><em>algo</em> juntos?</h2>
       <p class="contact__loc"><i></i>São José dos Campos — SP</p>
       <!-- efeito "bolha de sabão": svg#goo funde os blobs quando o mouse passa perto de dois botões -->
