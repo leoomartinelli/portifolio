@@ -630,24 +630,30 @@ html.is-loaded .fnotify__ping{animation:ping 2s ease-out infinite}
 }
 
 /* ==========================================================================
-   06 · GALERIA — câmera 3D (CSS puro) + grade de fotos
+   06 · GALERIA — transição: câmera 3D gira e cresce com o scroll, depois a grade de fotos
    ========================================================================== */
-.gal{position:relative;padding:clamp(80px,14vh,160px) 0 clamp(90px,16vh,180px);max-width:1600px;margin:0 auto}
-.gal__head{padding:0 var(--gut);display:grid;gap:clamp(14px,2.4vh,26px);margin-bottom:clamp(40px,7vh,84px);max-width:640px}
-.gal__lead{color:var(--dim);font-size:clamp(15px,1.3vw,20px);max-width:44ch}
-.gal__stage{padding:0 var(--gut)}
-
-/* ---------- palco da câmera 3D (iframe com Three.js) ---------- */
-.gal__cam{
-  position:relative;width:100%;aspect-ratio:16/10;max-height:620px;min-height:320px;
-  border-radius:22px;overflow:hidden;margin-bottom:clamp(30px,5vh,56px);
-  border:1px solid var(--line);box-shadow:0 50px 90px -40px rgba(0,0,0,.7);background:#050505;
+/* a câmera é uma TRANSIÇÃO amarrada ao scroll, não um brinquedo interativo:
+   sem cliques, sem arrastar — o progresso da seção fixada (--gp, 0 a 1) gira
+   e "aproxima" o modelo 3D dentro do iframe (via postMessage) e ao mesmo
+   tempo escala o próprio quadro do iframe, reforçando a sensação de algo
+   vindo em direção à tela. */
+.gal__stick{display:grid;place-items:center;isolation:isolate}
+.gal__head{
+  position:relative;z-index:2;text-align:center;max-width:620px;padding:0 var(--gut);
+  opacity:calc(1 - var(--gp,0)*3.2);transform:translateY(calc(var(--gp,0)*-26px));
+  transition:opacity .08s linear,transform .08s linear;pointer-events:none;
 }
-.gal__cam-frame{display:block;width:100%;height:100%;border:0;background:#050505}
+.gal__head .eyebrow{justify-content:center}
+.gal__head .eyebrow::after{display:none}
+.gal__lead{color:var(--dim);margin-top:14px;font-size:clamp(15px,1.3vw,20px)}
+
+.gal__cam{position:absolute;inset:0;z-index:1}
+.gal__cam-frame{display:block;width:100%;height:100%;border:0;background:#050505;pointer-events:none}
+
+/* ---------- grade de fotos (seção normal, depois da transição) ---------- */
+.galphotos{position:relative;padding:clamp(30px,6vh,70px) var(--gut) clamp(90px,16vh,180px);max-width:1600px;margin:0 auto}
 .gal__grid.is-flash{animation:galFlash .5s ease-out}
 @keyframes galFlash{0%{filter:brightness(1)}15%{filter:brightness(1.9)}100%{filter:brightness(1)}}
-
-/* ---------- grade de fotos ---------- */
 .gal__grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(8px,1.2vw,14px)}
 .gtile{
   position:relative;aspect-ratio:4/5;border-radius:10px;overflow:hidden;border:1px solid var(--line);
@@ -690,7 +696,6 @@ html.is-loaded .fnotify__ping{animation:ping 2s ease-out infinite}
   .gal__grid{grid-template-columns:repeat(3,1fr)}
 }
 @media (max-width:640px){
-  .gal__cam{aspect-ratio:4/5;max-height:70vh}
   .gal__grid{grid-template-columns:repeat(2,1fr)}
   .gtile__cap{opacity:1;transform:none;background:linear-gradient(0deg,rgba(0,0,0,.72),transparent 60%)}
 }

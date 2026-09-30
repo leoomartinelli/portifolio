@@ -428,61 +428,58 @@ leonardo.criar('seu projeto').then(console.log);</pre>
       </div>
     </section>
 
-    <!-- ─────────── 06 · GALERIA (câmera 3D girando; um flash revela as fotos) ─────────── -->
-    <section class="gal" id="galeria" data-scene="Galeria">
-      <div class="gal__head">
-        <p class="eyebrow"><b>06</b> Galeria</p>
-        <h2 class="h2" data-reveal>Do outro lado<br>d<em>a lente</em>.</h2>
-        <p class="gal__lead" data-reveal>
-          Fotos que eu mesmo tirei — sem banco de imagens. Clique numa pra ampliar.
-        </p>
+    <!-- ─────────── 06 · GALERIA — a câmera é uma TRANSIÇÃO amarrada ao scroll:
+         gira e "cresce" em direção à tela conforme o progresso da seção fixada,
+         sem nenhuma interação do usuário (sem arrastar, sem botões). Ao terminar,
+         a grade de fotos aparece na seção seguinte. ─────────── -->
+    <section class="gal pin" id="galeria" data-scene="Galeria" data-pin="220">
+      <div class="pin__stick gal__stick">
+        <div class="gal__cam" aria-hidden="true">
+          <iframe class="gal__cam-frame" id="galCamFrame" src="camera.html" title="" tabindex="-1" aria-hidden="true" loading="lazy"></iframe>
+        </div>
+        <div class="gal__head">
+          <p class="eyebrow"><b>06</b> Galeria</p>
+          <h2 class="h2">Do outro lado<br>d<em>a lente</em>.</h2>
+          <p class="gal__lead">Fotos que eu mesmo tirei — sem banco de imagens. Role pra ver.</p>
+        </div>
       </div>
+    </section>
 
-      <div class="gal__stage">
-        <!-- câmera 3D interativa (Three.js): arraste pra girar, botões de ângulo,
-             "Girar" liga/desliga a rotação automática, "Disparar" tira uma foto
-             (e avisa esta página por postMessage, que faz um flash passar pela grade). -->
-        <div class="gal__cam" data-reveal>
-          <iframe class="gal__cam-frame" id="galCamFrame" src="camera.html"
-                  title="Câmera 3D interativa: arraste para girar, use os botões para trocar de ângulo ou disparar"
-                  loading="lazy"></iframe>
-        </div>
-
-        <div class="gal__grid" id="galGrid">
-          <!-- Placeholders — troque cada .gtile__img por <img class="gtile__img" src="assets/galeria/nome.jpg" alt="descrição"> -->
-          <button class="gtile" data-reveal data-cap="Fim de tarde · f/4 · 1/250s · ISO 100">
-            <span class="gtile__img" style="--a:#ff8a3d;--b:#3a1208"></span>
-            <span class="gtile__cap">Fim de tarde <small>f/4 · 1/250s · ISO 100</small></span>
-          </button>
-          <button class="gtile" data-reveal data-cap="Retrato · f/1.8 · 1/200s · ISO 200">
-            <span class="gtile__img" style="--a:#6b5850;--b:#0e0b0a"></span>
-            <span class="gtile__cap">Retrato <small>f/1.8 · 1/200s · ISO 200</small></span>
-          </button>
-          <button class="gtile" data-reveal data-cap="Rua à noite · f/2.8 · 1/60s · ISO 1600">
-            <span class="gtile__img" style="--a:#2a3a5c;--b:#050710"></span>
-            <span class="gtile__cap">Rua à noite <small>f/2.8 · 1/60s · ISO 1600</small></span>
-          </button>
-          <button class="gtile" data-reveal data-cap="Céu aberto · f/8 · 1/1000s · ISO 100">
-            <span class="gtile__img" style="--a:#bfe3ef;--b:#2a5f72"></span>
-            <span class="gtile__cap">Céu aberto <small>f/8 · 1/1000s · ISO 100</small></span>
-          </button>
-          <button class="gtile" data-reveal data-cap="Detalhe · f/2 · 1/320s · ISO 100">
-            <span class="gtile__img" style="--a:#8a7a5a;--b:#1a140c"></span>
-            <span class="gtile__cap">Detalhe <small>f/2 · 1/320s · ISO 100</small></span>
-          </button>
-          <button class="gtile" data-reveal data-cap="Verde · f/3.5 · 1/500s · ISO 200">
-            <span class="gtile__img" style="--a:#5c7a4a;--b:#0d1608"></span>
-            <span class="gtile__cap">Verde <small>f/3.5 · 1/500s · ISO 200</small></span>
-          </button>
-          <button class="gtile" data-reveal data-cap="Preto e branco · f/5.6 · 1/250s · ISO 400">
-            <span class="gtile__img" style="--a:#9a9a9a;--b:#141414"></span>
-            <span class="gtile__cap">Preto e branco <small>f/5.6 · 1/250s · ISO 400</small></span>
-          </button>
-          <button class="gtile" data-reveal data-cap="Estrada · f/4 · 1/640s · ISO 100">
-            <span class="gtile__img" style="--a:#c98a4a;--b:#241206"></span>
-            <span class="gtile__cap">Estrada <small>f/4 · 1/640s · ISO 100</small></span>
-          </button>
-        </div>
+    <section class="galphotos" id="galeriaFotos" data-scene="Galeria">
+      <div class="gal__grid" id="galGrid">
+        <!-- Placeholders — troque cada .gtile__img por <img class="gtile__img" src="assets/galeria/nome.jpg" alt="descrição"> -->
+        <button class="gtile" data-reveal data-cap="Fim de tarde · f/4 · 1/250s · ISO 100">
+          <span class="gtile__img" style="--a:#ff8a3d;--b:#3a1208"></span>
+          <span class="gtile__cap">Fim de tarde <small>f/4 · 1/250s · ISO 100</small></span>
+        </button>
+        <button class="gtile" data-reveal data-cap="Retrato · f/1.8 · 1/200s · ISO 200">
+          <span class="gtile__img" style="--a:#6b5850;--b:#0e0b0a"></span>
+          <span class="gtile__cap">Retrato <small>f/1.8 · 1/200s · ISO 200</small></span>
+        </button>
+        <button class="gtile" data-reveal data-cap="Rua à noite · f/2.8 · 1/60s · ISO 1600">
+          <span class="gtile__img" style="--a:#2a3a5c;--b:#050710"></span>
+          <span class="gtile__cap">Rua à noite <small>f/2.8 · 1/60s · ISO 1600</small></span>
+        </button>
+        <button class="gtile" data-reveal data-cap="Céu aberto · f/8 · 1/1000s · ISO 100">
+          <span class="gtile__img" style="--a:#bfe3ef;--b:#2a5f72"></span>
+          <span class="gtile__cap">Céu aberto <small>f/8 · 1/1000s · ISO 100</small></span>
+        </button>
+        <button class="gtile" data-reveal data-cap="Detalhe · f/2 · 1/320s · ISO 100">
+          <span class="gtile__img" style="--a:#8a7a5a;--b:#1a140c"></span>
+          <span class="gtile__cap">Detalhe <small>f/2 · 1/320s · ISO 100</small></span>
+        </button>
+        <button class="gtile" data-reveal data-cap="Verde · f/3.5 · 1/500s · ISO 200">
+          <span class="gtile__img" style="--a:#5c7a4a;--b:#0d1608"></span>
+          <span class="gtile__cap">Verde <small>f/3.5 · 1/500s · ISO 200</small></span>
+        </button>
+        <button class="gtile" data-reveal data-cap="Preto e branco · f/5.6 · 1/250s · ISO 400">
+          <span class="gtile__img" style="--a:#9a9a9a;--b:#141414"></span>
+          <span class="gtile__cap">Preto e branco <small>f/5.6 · 1/250s · ISO 400</small></span>
+        </button>
+        <button class="gtile" data-reveal data-cap="Estrada · f/4 · 1/640s · ISO 100">
+          <span class="gtile__img" style="--a:#c98a4a;--b:#241206"></span>
+          <span class="gtile__cap">Estrada <small>f/4 · 1/640s · ISO 100</small></span>
+        </button>
       </div>
     </section>
 

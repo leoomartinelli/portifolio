@@ -272,6 +272,33 @@
     if (done) outEl.textContent = outEl.dataset[`out${tab}`];
   }
 
+  /* --- galeria: câmera 3D (iframe à parte) gira e "cresce" conforme o progresso
+     da seção fixada — sem interação do usuário, só o scroll pilota tudo. --- */
+  const galPin = pinById('galeria');
+  const galEl = galPin && galPin.el;
+  const galCamFrame = $('#galCamFrame');
+  const galGrid = $('#galGrid');
+  let galFlashed = false;
+  let galLastSent = -1;
+
+  function updGaleria(p) {
+    galEl.style.setProperty('--gp', p.toFixed(4));
+    if (galCamFrame && galCamFrame.contentWindow && Math.abs(p - galLastSent) > .002) {
+      galLastSent = p;
+      galCamFrame.contentWindow.postMessage({ source: 'lm01-parent', type: 'progress', t: p }, '*');
+    }
+    if (p > .92) {
+      if (!galFlashed && galGrid) {
+        galFlashed = true;
+        galGrid.classList.remove('is-flash');
+        void galGrid.offsetWidth;
+        galGrid.classList.add('is-flash');
+      }
+    } else if (p < .5) {
+      galFlashed = false;
+    }
+  }
+
   /* --- lente: foco puxado + visor --- */
   const lensPin = pinById('lente');
   const lensEl = lensPin && lensPin.el;
@@ -407,6 +434,7 @@
     if (film && near(film.pin)) updFilm(pinP(film.pin));
     if (near(stackPin)) updStack(pinP(stackPin));
     if (near(lensPin)) updLens(pinP(lensPin), now);
+    if (near(galPin)) updGaleria(pinP(galPin));
 
     cursorFrame();
     requestAnimationFrame(frame);
@@ -477,22 +505,6 @@
       p.style.setProperty('--rx', '0deg');
     });
   });
-
-  /* ------------------------------------------------------------------------
-     Galeria — a câmera 3D (iframe próprio, Three.js) avisa por postMessage
-     quando o botão "Disparar" é clicado; a grade de fotos pisca em resposta.
-     ------------------------------------------------------------------------ */
-  const galGrid = $('#galGrid');
-  const galCamFrame = $('#galCamFrame');
-  if (galGrid && galCamFrame && !reduced) {
-    addEventListener('message', (e) => {
-      if (e.source !== galCamFrame.contentWindow) return;
-      if (!e.data || e.data.source !== 'lm01-camera' || e.data.type !== 'shoot') return;
-      galGrid.classList.remove('is-flash');
-      void galGrid.offsetWidth;
-      galGrid.classList.add('is-flash');
-    });
-  }
 
   const lightbox = $('#lightbox');
   if (lightbox) {

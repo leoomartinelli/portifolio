@@ -42,85 +42,25 @@
     -webkit-font-smoothing: antialiased;
   }
   .stage { position: relative; height: 100%; }
-  canvas#c { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; outline: none; }
-  canvas#c:active { cursor: grabbing; }
-
-  .id { position: absolute; top: clamp(18px, 4vw, 40px); left: clamp(18px, 4vw, 44px); pointer-events: none; max-width: 22rem; }
-  .id h1 {
-    margin: 0; font-weight: 800; font-size: clamp(3rem, 9vw, 6.5rem);
-    line-height: .86; letter-spacing: -.045em; font-variation-settings: "opsz" 96;
-  }
-  .id h1 .px { display: inline-block; width: .16em; height: .16em; background: var(--accent); margin-left: .06em; vertical-align: .08em; }
-  .id p { margin: .7rem 0 0; font-family: var(--serif); font-style: italic; font-size: clamp(1.15rem, 2vw, 1.45rem); line-height: 1.3; color: var(--muted); }
-
-  .count { position: absolute; top: clamp(18px, 4vw, 40px); right: clamp(18px, 4vw, 44px); text-align: right; pointer-events: none; }
-  .count b { display: block; font-weight: 800; font-size: clamp(2rem, 5vw, 3rem); line-height: 1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
-  .count span { font-size: .85rem; color: var(--muted); }
-
-  .dock {
-    position: absolute; left: 50%; bottom: clamp(16px, 3.5vw, 36px); transform: translateX(-50%);
-    display: flex; align-items: center; gap: 6px; padding: 6px;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
-    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-    max-width: calc(100% - 24px);
-  }
-  .views { display: flex; gap: 2px; }
-  .dock button {
-    font: 600 .92rem/1 var(--sans); color: var(--ink); background: transparent;
-    border: 0; border-radius: 999px; padding: .72rem 1rem; cursor: pointer; white-space: nowrap;
-  }
-  .dock button:hover { background: var(--line); }
-  .dock button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
-  .dock button:focus-visible, canvas#c:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .sep { width: 1px; align-self: stretch; margin: 6px 4px; background: var(--line); }
-  .dock .shoot { background: var(--accent); color: #050505; padding-inline: 1.25rem; display: inline-flex; align-items: center; gap: .5rem; }
-  .dock .shoot:hover { background: #ff6a42; }
-  .dock .shoot i { width: .7rem; height: .7rem; border-radius: 50%; border: 2px solid currentColor; }
-
-  .hint { position: absolute; left: clamp(18px, 4vw, 44px); bottom: clamp(22px, 4vw, 44px); margin: 0; font-size: .85rem; color: var(--muted); max-width: 15rem; line-height: 1.4; pointer-events: none; }
+  canvas#c { position: absolute; inset: 0; width: 100%; height: 100%; display: block; outline: none; pointer-events: none; }
 
   .status { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font-family: var(--serif); font-style: italic; font-size: 1.4rem; color: var(--muted); pointer-events: none; transition: opacity .5s; }
   .status.off { opacity: 0; }
   .flash { position: fixed; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
-  .flash.on { animation: fl .45s ease-out; }
-  @keyframes fl { 0% { opacity: .85 } 100% { opacity: 0 } }
+  .flash.on { animation: fl .55s ease-out; }
+  @keyframes fl { 0% { opacity: .92 } 100% { opacity: 0 } }
 
-  @media (max-width: 760px) {
-    .hint { display: none; }
-    .dock { left: 12px; right: 12px; transform: none; justify-content: space-between; border-radius: 22px; flex-wrap: wrap; }
-    .dock button { padding: .7rem .8rem; font-size: .88rem; }
-    .sep { display: none; }
-    .dock .shoot { flex: 1 1 100%; justify-content: center; }
-  }
   @media (prefers-reduced-motion: reduce) { .flash.on { animation-duration: .01s; } .status { transition: none; } }
 </style>
 </head>
 <body>
 <main class="stage">
-  <canvas id="c" tabindex="0" role="img" aria-label="Modelo 3D interativo da câmera mirrorless LM-01 com lente 35mm. Arraste para girar."></canvas>
-
-  <div class="count" aria-live="polite"><b id="shots">0000</b><span>disparos</span></div>
-
-  <p class="hint">Arraste para girar. Role ou faça pinça para aproximar.</p>
-
-  <nav class="dock" aria-label="Controles da câmera">
-    <div class="views" role="group" aria-label="Ângulo">
-      <button type="button" data-view="three" aria-pressed="true">¾</button>
-      <button type="button" data-view="front" aria-pressed="false">Frente</button>
-      <button type="button" data-view="top" aria-pressed="false">Topo</button>
-      <button type="button" data-view="back" aria-pressed="false">Traseira</button>
-    </div>
-    <span class="sep"></span>
-    <button type="button" id="spin" aria-pressed="true">Girar</button>
-    <button type="button" class="shoot" id="shoot"><i></i>Disparar</button>
-  </nav>
-
+  <canvas id="c" aria-hidden="true"></canvas>
   <p class="status" id="status">Montando a câmera…</p>
   <div class="flash" id="flash"></div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js"></script>
 <script>
 window.addEventListener('error', function () { var el = document.getElementById('status'); if (el) el.textContent = 'O 3D encontrou um erro ao carregar. Recarregue a página.'; });
@@ -128,7 +68,6 @@ window.addEventListener('error', function () { var el = document.getElementById(
   const statusEl = document.getElementById('status');
   if (!window.THREE) { statusEl.textContent = 'Não foi possível carregar o 3D. Recarregue a página.'; return; }
 
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const canvas = document.getElementById('c');
   let renderer;
   try {
@@ -430,64 +369,50 @@ window.addEventListener('error', function () { var el = document.getElementById(
     }).catch(() => {});
   }
 
-  /* ---------- câmera e controles ---------- */
-  const controls = new THREE.OrbitControls(camera, canvas);
-  controls.target.copy(target);
-  controls.enableDamping = true; controls.dampingFactor = .07;
-  controls.enablePan = false;
-  controls.minDistance = 13; controls.maxDistance = 45;
-  controls.autoRotate = !reduced; controls.autoRotateSpeed = .9;
+  /* ---------- transição controlada por rolagem, sem interação do usuário ----------
+     A página-mãe calcula o progresso (0..1) de uma seção fixada na tela e manda por
+     postMessage a cada quadro. Aqui só reagimos: giramos o corpo da câmera e
+     aproximamos a câmera de visualização dela, simulando algo "crescendo" em
+     direção à tela — sem OrbitControls, sem cliques, sem teclado. */
+  const flashEl = document.getElementById('flash');
+  const baseSpherical = new THREE.Spherical().setFromVector3(new THREE.Vector3(15, 7, 21).clone().sub(target));
+  camera.position.set(15, 7, 21);
+  camera.lookAt(target);
 
-  const VIEWS = {
-    three: new THREE.Vector3(15, 7, 21),
-    front: new THREE.Vector3(0.4, 1.2, 28),
-    top: new THREE.Vector3(0.4, 28, 4),
-    back: new THREE.Vector3(0.4, 2.5, -27),
-  };
-  camera.position.copy(VIEWS.three);
+  const easeInCubic = x => x * x * x;
+  let progress = 0, flashArmed = true, baseFov = 32, press = 0;
 
-  let tween = null;
-  function goTo(name) {
-    const from = new THREE.Spherical().setFromVector3(camera.position.clone().sub(target));
-    const to = new THREE.Spherical().setFromVector3(VIEWS[name].clone().sub(target));
-    to.phi = Math.max(.15, to.phi);
-    let d = to.theta - from.theta;
-    d = ((d + Math.PI) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2) - Math.PI;
-    to.theta = from.theta + d;
-    tween = { from, to, t: performance.now(), dur: reduced ? 1 : 1000 };
-    controls.enabled = false;
-  }
-  const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
-
-  const viewBtns = document.querySelectorAll('[data-view]');
-  const spinBtn = document.getElementById('spin');
-  spinBtn.setAttribute('aria-pressed', String(controls.autoRotate));
-  function setSpin(on) { controls.autoRotate = on; spinBtn.setAttribute('aria-pressed', String(on)); }
-  viewBtns.forEach(b => b.addEventListener('click', () => {
-    viewBtns.forEach(o => o.setAttribute('aria-pressed', String(o === b)));
-    setSpin(false); goTo(b.dataset.view);
-  }));
-  spinBtn.addEventListener('click', () => setSpin(!controls.autoRotate));
-  controls.addEventListener('start', () => viewBtns.forEach(o => o.setAttribute('aria-pressed', 'false')));
-
-  // teclado no canvas
-  canvas.addEventListener('keydown', e => {
-    const step = .12, s = new THREE.Spherical().setFromVector3(camera.position.clone().sub(target));
-    if (e.key === 'ArrowLeft') s.theta -= step; else if (e.key === 'ArrowRight') s.theta += step;
-    else if (e.key === 'ArrowUp') s.phi = Math.max(.15, s.phi - step); else if (e.key === 'ArrowDown') s.phi = Math.min(Math.PI - .15, s.phi + step);
-    else return;
-    e.preventDefault(); setSpin(false);
+  function applyProgress(t) {
+    progress = Math.max(0, Math.min(1, t));
+    // duas fases, pra não combinar giro + aproximação de um jeito imprevisível
+    // (um corpo comprido como o da câmera, orbitado bem de perto, some de
+    // quadro em certos ângulos): primeiro só gira, num raio estável; depois
+    // só aproxima, com o ângulo já fixo — um "empurrão" reto pra frente.
+    const rotP = Math.min(1, progress / 0.55);
+    const zoomP = Math.max(0, (progress - 0.55) / 0.45);
+    const eZoom = easeInCubic(zoomP);
+    const theta = baseSpherical.theta + rotP * Math.PI * 1.6;
+    const radius = THREE.MathUtils.lerp(24, 13, eZoom);
+    const s = new THREE.Spherical(radius, baseSpherical.phi, theta);
     camera.position.setFromSpherical(s).add(target);
-  });
+    camera.lookAt(target);
+    camera.fov = baseFov + eZoom * 14;
+    camera.updateProjectionMatrix();
 
-  /* ---------- disparo ---------- */
-  let shots = 0, press = 0;
-  const shotsEl = document.getElementById('shots'), flashEl = document.getElementById('flash');
-  document.getElementById('shoot').addEventListener('click', () => {
-    shots++; shotsEl.textContent = String(shots).padStart(4, '0');
-    press = performance.now(); lcdFlash = 1;
-    flashEl.classList.remove('on'); void flashEl.offsetWidth; flashEl.classList.add('on');
-    try { parent.postMessage({ source: 'lm01-camera', type: 'shoot', shots }, '*'); } catch (e) {}
+    if (progress > 0.86) {
+      if (flashArmed) {
+        flashArmed = false;
+        press = performance.now(); lcdFlash = 1;
+        flashEl.classList.remove('on'); void flashEl.offsetWidth; flashEl.classList.add('on');
+      }
+    } else if (progress < 0.5) {
+      flashArmed = true;
+    }
+  }
+
+  window.addEventListener('message', (e) => {
+    if (!e.data || e.data.source !== 'lm01-parent' || e.data.type !== 'progress') return;
+    applyProgress(e.data.t);
   });
 
   /* ---------- tamanho e loop ---------- */
@@ -496,8 +421,8 @@ window.addEventListener('error', function () { var el = document.getElementById(
     if (!w || !h) return;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
-    camera.fov = w / h < .8 ? 44 : 32;
-    camera.updateProjectionMatrix();
+    baseFov = w / h < .8 ? 44 : 32;
+    applyProgress(progress);
   }
   addEventListener('resize', resize);
   resize();
@@ -505,18 +430,8 @@ window.addEventListener('error', function () { var el = document.getElementById(
   let lastLCD = 0, first = true;
   function frame(now) {
     requestAnimationFrame(frame);
-    if (tween) {
-      const k = Math.min(1, (now - tween.t) / tween.dur), e = ease(k);
-      const s = new THREE.Spherical(
-        tween.from.radius + (tween.to.radius - tween.from.radius) * e,
-        tween.from.phi + (tween.to.phi - tween.from.phi) * e,
-        tween.from.theta + (tween.to.theta - tween.from.theta) * e);
-      camera.position.setFromSpherical(s).add(target);
-      camera.lookAt(target);
-      if (k >= 1) { tween = null; controls.enabled = true; }
-    } else controls.update();
 
-    // animação do disparador
+    // animação do disparador — dispara sozinho perto do fim da transição
     const dt = now - press;
     shutterBtn.position.y = .28 - (dt < 90 ? .09 : dt < 220 ? .09 * (1 - (dt - 90) / 130) : 0);
     if (lcdFlash > 0) lcdFlash = Math.max(0, 1 - dt / 350);
